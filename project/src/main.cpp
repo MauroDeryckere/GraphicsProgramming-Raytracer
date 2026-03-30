@@ -49,18 +49,18 @@ int main(int argc, char* args[])
 	const auto pTimer = new Timer();
 	const auto pRenderer = new Renderer(pWindow);
 
-	//auto const pScene { new Scene_W1() };
-	//auto const pScene{ new Scene_W2() };
-	//auto const pScene{ new Scene_W3() };
-	//auto const pScene{ new Scene_W3_TestScene() };
+	//auto const pScene { new Scene_BasicGeometry() };
+	//auto const pScene{ new Scene_PointLights() };
+	//auto const pScene{ new Scene_CookTorrence() };
+	//auto const pScene{ new Scene_LambertPhong() };
 
-	//auto const pScene{ new Scene_TriangleTest{} };
-	//auto const pScene{ new Scene_W4_TestScene{} };
+	//auto const pScene{ new Scene_Triangle{} };
+	//auto const pScene{ new Scene_MeshTest{} };
 
-	auto const pScene{ new Scene_W4_ReferenceScene{} };
-	//auto const pScene{ new Scene_W4_BunnyScene{} };
+	auto const pScene{ new Scene_Reference{} };
+	//auto const pScene{ new Scene_Bunny{} };
 
-	//auto const pScene{ new Scene_Softshadows{} };
+	//auto const pScene{ new Scene_SoftShadows{} };
 
 	PrintInfo();
 

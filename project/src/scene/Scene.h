@@ -65,130 +65,130 @@ namespace mau
 		unsigned char AddMaterial(Material* pMaterial);
 	};
 
-	class Scene_W1 final : public Scene
+	class Scene_BasicGeometry final : public Scene
 	{
 	public:
-		Scene_W1() = default;
-		~Scene_W1() override = default;
+		Scene_BasicGeometry() = default;
+		~Scene_BasicGeometry() override = default;
 
-		Scene_W1(const Scene_W1&) = delete;
-		Scene_W1(Scene_W1&&) noexcept = delete;
-		Scene_W1& operator=(const Scene_W1&) = delete;
-		Scene_W1& operator=(Scene_W1&&) noexcept = delete;
+		Scene_BasicGeometry(const Scene_BasicGeometry&) = delete;
+		Scene_BasicGeometry(Scene_BasicGeometry&&) noexcept = delete;
+		Scene_BasicGeometry& operator=(const Scene_BasicGeometry&) = delete;
+		Scene_BasicGeometry& operator=(Scene_BasicGeometry&&) noexcept = delete;
 
 		void Initialize() override;
 	};
 
-	class Scene_W2 final : public Scene
+	class Scene_PointLights final : public Scene
 	{
 	public:
-		Scene_W2() = default;
-		~Scene_W2() override = default;
+		Scene_PointLights() = default;
+		~Scene_PointLights() override = default;
 
-		Scene_W2(const Scene_W2&) = delete;
-		Scene_W2(Scene_W2&&) noexcept = delete;
-		Scene_W2& operator=(const Scene_W2&) = delete;
-		Scene_W2& operator=(Scene_W2&&) noexcept = delete;
+		Scene_PointLights(const Scene_PointLights&) = delete;
+		Scene_PointLights(Scene_PointLights&&) noexcept = delete;
+		Scene_PointLights& operator=(const Scene_PointLights&) = delete;
+		Scene_PointLights& operator=(Scene_PointLights&&) noexcept = delete;
 
 		void Initialize() override;
 	};
 
-	class Scene_W3 final : public Scene
+	class Scene_CookTorrence final : public Scene
 	{
 	public:
-		Scene_W3() = default;
-		~Scene_W3() override = default;
+		Scene_CookTorrence() = default;
+		~Scene_CookTorrence() override = default;
 
-		Scene_W3(const Scene_W3&) = delete;
-		Scene_W3(Scene_W3&&) noexcept = delete;
-		Scene_W3& operator=(const Scene_W3&) = delete;
-		Scene_W3& operator=(Scene_W3&&) noexcept = delete;
+		Scene_CookTorrence(const Scene_CookTorrence&) = delete;
+		Scene_CookTorrence(Scene_CookTorrence&&) noexcept = delete;
+		Scene_CookTorrence& operator=(const Scene_CookTorrence&) = delete;
+		Scene_CookTorrence& operator=(Scene_CookTorrence&&) noexcept = delete;
 
 		void Initialize() override;
 	};
 
-	class Scene_W3_TestScene final : public Scene
+	class Scene_LambertPhong final : public Scene
 	{
 	public:
-		Scene_W3_TestScene() = default;
-		~Scene_W3_TestScene() override = default;
+		Scene_LambertPhong() = default;
+		~Scene_LambertPhong() override = default;
 
-		Scene_W3_TestScene(const Scene_W3_TestScene&) = delete;
-		Scene_W3_TestScene(Scene_W3_TestScene&&) noexcept = delete;
-		Scene_W3_TestScene& operator=(const Scene_W3_TestScene&) = delete;
-		Scene_W3_TestScene& operator=(Scene_W3_TestScene&&) noexcept = delete;
+		Scene_LambertPhong(const Scene_LambertPhong&) = delete;
+		Scene_LambertPhong(Scene_LambertPhong&&) noexcept = delete;
+		Scene_LambertPhong& operator=(const Scene_LambertPhong&) = delete;
+		Scene_LambertPhong& operator=(Scene_LambertPhong&&) noexcept = delete;
 
 		void Initialize() override;
 	};
 
-	class Scene_TriangleTest final : public Scene
+	class Scene_Triangle final : public Scene
 	{
 	public:
-		Scene_TriangleTest() = default;
-		~Scene_TriangleTest() override = default;
+		Scene_Triangle() = default;
+		~Scene_Triangle() override = default;
 
-		Scene_TriangleTest(const Scene_TriangleTest&) = delete;
-		Scene_TriangleTest(Scene_TriangleTest&&) noexcept = delete;
-		Scene_TriangleTest& operator=(const Scene_TriangleTest&) = delete;
-		Scene_TriangleTest& operator=(Scene_TriangleTest&&) noexcept = delete;
+		Scene_Triangle(const Scene_Triangle&) = delete;
+		Scene_Triangle(Scene_Triangle&&) noexcept = delete;
+		Scene_Triangle& operator=(const Scene_Triangle&) = delete;
+		Scene_Triangle& operator=(Scene_Triangle&&) noexcept = delete;
 
 		void Initialize() override;
 		};
 
-	class Scene_W4_TestScene final : public Scene
+	class Scene_MeshTest final : public Scene
 	{
 	public:
-		Scene_W4_TestScene() = default;
-		~Scene_W4_TestScene() override = default;
+		Scene_MeshTest() = default;
+		~Scene_MeshTest() override = default;
 
-		Scene_W4_TestScene(const Scene_W4_TestScene&) = delete;
-		Scene_W4_TestScene(Scene_W4_TestScene&&) noexcept = delete;
-		Scene_W4_TestScene& operator=(const Scene_W4_TestScene&) = delete;
-		Scene_W4_TestScene& operator=(Scene_W4_TestScene&&) noexcept = delete;
+		Scene_MeshTest(const Scene_MeshTest&) = delete;
+		Scene_MeshTest(Scene_MeshTest&&) noexcept = delete;
+		Scene_MeshTest& operator=(const Scene_MeshTest&) = delete;
+		Scene_MeshTest& operator=(Scene_MeshTest&&) noexcept = delete;
 
 		void Initialize() override;
 		void Update(Timer* pTimer) override;
 	};
 
-	class Scene_W4_ReferenceScene final : public Scene
+	class Scene_Reference final : public Scene
 	{
 	public:
-		Scene_W4_ReferenceScene() = default;
-		~Scene_W4_ReferenceScene() override = default;
+		Scene_Reference() = default;
+		~Scene_Reference() override = default;
 
-		Scene_W4_ReferenceScene(const Scene_W4_ReferenceScene&) = delete;
-		Scene_W4_ReferenceScene(Scene_W4_ReferenceScene&&) noexcept = delete;
-		Scene_W4_ReferenceScene& operator=(const Scene_W4_ReferenceScene&) = delete;
-		Scene_W4_ReferenceScene& operator=(Scene_W4_ReferenceScene&&) noexcept = delete;
+		Scene_Reference(const Scene_Reference&) = delete;
+		Scene_Reference(Scene_Reference&&) noexcept = delete;
+		Scene_Reference& operator=(const Scene_Reference&) = delete;
+		Scene_Reference& operator=(Scene_Reference&&) noexcept = delete;
 
 		void Initialize() override;
 		void Update(Timer* pTimer) override;
 	};
 
-	class Scene_W4_BunnyScene final : public Scene
+	class Scene_Bunny final : public Scene
 	{
 	public:
-		Scene_W4_BunnyScene() = default;
-		~Scene_W4_BunnyScene() override = default;
+		Scene_Bunny() = default;
+		~Scene_Bunny() override = default;
 
-		Scene_W4_BunnyScene(const Scene_W4_BunnyScene&) = delete;
-		Scene_W4_BunnyScene(Scene_W4_BunnyScene&&) noexcept = delete;
-		Scene_W4_BunnyScene& operator=(const Scene_W4_BunnyScene&) = delete;
-		Scene_W4_BunnyScene& operator=(Scene_W4_BunnyScene&&) noexcept = delete;
+		Scene_Bunny(const Scene_Bunny&) = delete;
+		Scene_Bunny(Scene_Bunny&&) noexcept = delete;
+		Scene_Bunny& operator=(const Scene_Bunny&) = delete;
+		Scene_Bunny& operator=(Scene_Bunny&&) noexcept = delete;
 
 		void Initialize() override;
 	};
 
-	class Scene_Softshadows final : public Scene
+	class Scene_SoftShadows final : public Scene
 	{
 	public:
-		Scene_Softshadows() = default;
-		~Scene_Softshadows() override = default;
+		Scene_SoftShadows() = default;
+		~Scene_SoftShadows() override = default;
 
-		Scene_Softshadows(const Scene_Softshadows&) = delete;
-		Scene_Softshadows(Scene_Softshadows&&) noexcept = delete;
-		Scene_Softshadows& operator=(const Scene_Softshadows&) = delete;
-		Scene_Softshadows& operator=(Scene_Softshadows&&) noexcept = delete;
+		Scene_SoftShadows(const Scene_SoftShadows&) = delete;
+		Scene_SoftShadows(Scene_SoftShadows&&) noexcept = delete;
+		Scene_SoftShadows& operator=(const Scene_SoftShadows&) = delete;
+		Scene_SoftShadows& operator=(Scene_SoftShadows&&) noexcept = delete;
 
 		void Initialize() override;
 	};

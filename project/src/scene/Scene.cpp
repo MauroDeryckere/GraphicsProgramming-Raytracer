@@ -10,7 +10,6 @@
 
 namespace mau
 {
-#pragma region Base Scene
 	//Initialize Scene with Default Solid Color Material (RED)
 	Scene::Scene() :
 		m_Materials({ new Material_SolidColor({1,0,0}) })
@@ -140,7 +139,6 @@ namespace mau
 		return false;
 	}
 
-#pragma region Scene Helpers
 	Sphere* Scene::AddSphere(const Vector3& origin, float radius, unsigned char materialIndex)
 	{
 		Sphere s;
@@ -237,11 +235,8 @@ namespace mau
 		m_Materials.push_back(pMaterial);
 		return static_cast<unsigned char>(m_Materials.size() - 1);
 	}
-#pragma endregion
-#pragma endregion
 
-#pragma region SCENE W1
-	void Scene_W1::Initialize()
+	void Scene_BasicGeometry::Initialize()
 	{
 		//default: Material id0 >> SolidColor Material (RED)
 		unsigned char constexpr matId_Solid_Red{ 0 };
@@ -262,10 +257,8 @@ namespace mau
 		AddPlane({ 0.f, 75.f, 0.f }, { 0.f, -1.f,0.f }, matId_Solid_Yellow);
 		AddPlane({ 0.f, 0.f, 125.f }, { 0.f, 0.f,-1.f }, matId_Solid_Magenta);
 	}
-#pragma endregion
 
-#pragma region SCENE W2
-	void Scene_W2::Initialize()
+	void Scene_PointLights::Initialize()
 	{
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
@@ -296,10 +289,8 @@ namespace mau
 		//Light
 		AddPointLight({ 0.f, 5.f, -5.f }, 70.f, colors::White);
 	}
-#pragma endregion
 
-#pragma region SCENE W3
-	void Scene_W3::Initialize()
+	void Scene_CookTorrence::Initialize()
 	{
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
@@ -334,7 +325,7 @@ namespace mau
 		AddPointLight({ 2.5f, 2.5f, -5.f }, 50.f, { .34f, .47f, .68f }); 
 	}
 
-	void Scene_W3_TestScene::Initialize()
+	void Scene_LambertPhong::Initialize()
 	{
 		m_Camera.origin = { 0.f, 1.f, -5.f };
 		m_Camera.fovAngle = 45.f;
@@ -352,10 +343,8 @@ namespace mau
 		AddPointLight({ 0.f, 5.f, 5.f }, 25.f, colors::White);
 		AddPointLight({ 0.f, 2.5f, -5.f }, 25.f, colors::White);
 	}
-#pragma endregion
 
-#pragma region SCENE W4
-	void Scene_TriangleTest::Initialize()
+	void Scene_Triangle::Initialize()
 	{
 		m_Camera.origin = { 0.f, 1.f, -5.f };
 		m_Camera.fovAngle = 45.f;
@@ -381,7 +370,7 @@ namespace mau
 		AddPointLight({ 2.5f, 2.5f, -5.f }, 50.f, { .34f, .47f, .68f });
 	}
 
-	void Scene_W4_TestScene::Initialize()
+	void Scene_MeshTest::Initialize()
 	{
 		m_Camera.origin = { 0.f, 1.f, -5.f };
 		m_Camera.fovAngle = 45.f;
@@ -412,12 +401,12 @@ namespace mau
 		AddPointLight({ 2.5f, 2.5f, -5.f }, 50.f, { .34f, .47f, .68f });
 	}
 
-	void Scene_W4_TestScene::Update(Timer* pTimer)
+	void Scene_MeshTest::Update(Timer* pTimer)
 	{
 		Scene::Update(pTimer);
 	}
 
-	void Scene_W4_ReferenceScene::Initialize()
+	void Scene_Reference::Initialize()
 	{
 		m_SceneName = "Reference Scene";
 		m_Camera.origin = { 0.f, 3.f, -9.f };
@@ -473,7 +462,7 @@ namespace mau
 		AddPointLight({ 2.5f, 2.5f, -5.f }, 50.f, { .34f, .47f, .68f });
 	}
 
-	void Scene_W4_ReferenceScene::Update(Timer* pTimer)
+	void Scene_Reference::Update(Timer* pTimer)
 	{
 		Scene::Update(pTimer);
 
@@ -485,7 +474,7 @@ namespace mau
 		}
 	}
 
-	void Scene_W4_BunnyScene::Initialize()
+	void Scene_Bunny::Initialize()
 	{
 		m_SceneName = "Reference Scene";
 		m_Camera.origin = { 0.f, 3.f, -9.f };
@@ -535,9 +524,8 @@ namespace mau
 		AddPointLight({ -2.5f, 5.f, -5.f }, 70.f, { 1.f, .80f, .45f });
 		AddPointLight({ 2.5f, 2.5f, -5.f }, 50.f, { .34f, .47f, .68f });
 	}
-#pragma endregion
 
-	void Scene_Softshadows::Initialize()
+	void Scene_SoftShadows::Initialize()
 	{
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
