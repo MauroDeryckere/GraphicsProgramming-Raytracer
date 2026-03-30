@@ -2,7 +2,7 @@
 #define BVH_H
 
 #include <cassert>
-#include <stdint.h>
+#include <cstdint>
 #include <limits>
 #include <vector>
 #include "Vector3.h"
@@ -40,8 +40,8 @@ namespace mau
 			assert(bvh[nodeIdx].IsLeaf());
 
 			BVHNode& node{ bvh[nodeIdx] };
-			node.aabbMin = { 1e30f, 1e30f, 1e30f };
-			node.aabbMax = { -1e30f, -1e30f, -1e30f };
+			node.aabbMin = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+			node.aabbMax = { std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest() };
 			
 			uint32_t const first{ node.leftFirst };
 			for (uint32_t i{ 0 }; i < node.triangleCount; ++i)

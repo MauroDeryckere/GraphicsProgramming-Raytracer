@@ -68,14 +68,14 @@ void Timer::Update()
 	{
 		m_FPS = 0;
 		m_ElapsedTime = 0.0f;
-		m_TotalTime = (float)(((m_StopTime - m_PausedTime) - m_BaseTime) * m_BaseTime);
+		m_TotalTime = static_cast<float>(((m_StopTime - m_PausedTime) - m_BaseTime) * m_BaseTime);
 		return;
 	}
 
 	const uint64_t currentTime = SDL_GetPerformanceCounter();
 	m_CurrentTime = currentTime;
 
-	m_ElapsedTime = (float)((m_CurrentTime - m_PreviousTime) * m_SecondsPerCount);
+	m_ElapsedTime = static_cast<float>((m_CurrentTime - m_PreviousTime) * m_SecondsPerCount);
 	m_PreviousTime = m_CurrentTime;
 
 	if (m_ElapsedTime < 0.0f)
@@ -86,7 +86,7 @@ void Timer::Update()
 		m_ElapsedTime = m_ElapsedUpperBound;
 	}
 
-	m_TotalTime = (float)(((m_CurrentTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
+	m_TotalTime = static_cast<float>(((m_CurrentTime - m_PausedTime) - m_BaseTime) * m_SecondsPerCount);
 
 	//FPS LOGIC
 	m_FPSTimer += m_ElapsedTime;

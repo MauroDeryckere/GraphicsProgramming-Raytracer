@@ -444,7 +444,7 @@ namespace mau
 
 					indices.push_back(static_cast<int>(i0) - 1);
 					indices.push_back(static_cast<int>(i1) - 1);
-					indices.push_back((int)i2 - 1);
+					indices.push_back(static_cast<int>(i2) - 1);
 				}
 				//read till end of line and ignore all remaining chars
 				file.ignore(1000, '\n');
