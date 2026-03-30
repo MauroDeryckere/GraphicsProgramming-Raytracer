@@ -130,7 +130,6 @@ namespace mau
 		//TRIANGLE HIT-TESTS
 		inline bool HitTest_Triangle(const Triangle& triangle, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-			auto const origin{ (triangle.v0 + triangle.v1 + triangle.v2) / 3.f };
 			auto const dotProd{ Vector3::Dot(triangle.normal, ray.direction) };
 
 			if (AreEqual(dotProd, 0.f))
@@ -183,7 +182,7 @@ namespace mau
 				}
 			}
 
-			float const t{ Vector3::Dot((origin - ray.origin), triangle.normal) / Vector3::Dot(ray.direction, triangle.normal) };
+			float const t{ Vector3::Dot((triangle.v0 - ray.origin), triangle.normal) / dotProd };
 			if (t < ray.min ||  t > ray.max)
 			{
 				return false;
