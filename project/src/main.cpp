@@ -25,11 +25,8 @@ void ShutDown(SDL_Window* pWindow)
 	SDL_Quit();
 }
 
-int main(int argc, char* args[])
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 {
-	//Unreferenced parameters
-	(void)argc;
-	(void)args;
 
 	//Create window + surfaces
 	SDL_Init(SDL_INIT_VIDEO);

@@ -36,7 +36,8 @@ namespace mau
 			m_Camera.Update(pTimer);
 		}
 
-		Camera& GetCamera() { return m_Camera; }
+		Camera& GetCamera() noexcept { return m_Camera; }
+		const Camera& GetCamera() const noexcept { return m_Camera; }
 		void GetClosestHit(const Ray& ray, HitRecord& closestHit) const;
 		[[nodiscard]] bool DoesHit(const Ray& ray) const;
 

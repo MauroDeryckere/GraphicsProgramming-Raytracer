@@ -1,6 +1,7 @@
 #ifndef DATATYPES_H
 #define DATATYPES_H
 
+#include <limits>
 #include <vector>
 #include "Maths.h"
 
@@ -255,14 +256,14 @@ namespace mau
 		Vector3 direction{};
 
 		float min{ 0.0001f };
-		float max{ FLT_MAX };
+		float max{ std::numeric_limits<float>::max() };
 	};
 
 	struct HitRecord
 	{
 		Vector3 origin{};
 		Vector3 normal{};
-		float t = FLT_MAX;
+		float t = std::numeric_limits<float>::max();
 
 		bool didHit{ false };
 		uint8_t materialIndex{ 0 };
