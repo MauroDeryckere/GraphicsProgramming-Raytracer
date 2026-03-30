@@ -127,9 +127,11 @@ void Renderer::Render(Scene* pScene)
 					uint32_t wireDepth{};
 					if (GeometryUtils::TraceAABBWireframes(viewRay, mesh, wireT, wireDepth))
 					{
-						//Green wireframe, brighter for shallower nodes
-						float const brightness{ 1.f - wireDepth * 0.08f };
-						frameColor = ColorRGB{ 0.f, std::max(brightness, 0.2f), 0.f };
+						//Red (shallow) -> Orange -> Yellow -> Green (deep)
+						float const t{ std::min(wireDepth / 10.f, 1.f) };
+						float const r{ 1.f - t };
+						float const g{ t < 0.5f ? t * 2.f : 1.f };
+						frameColor = ColorRGB{ r, g, 0.f };
 					}
 				}
 			}
