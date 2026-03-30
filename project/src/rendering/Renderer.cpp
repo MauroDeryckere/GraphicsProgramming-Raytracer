@@ -48,8 +48,12 @@ void Renderer::Render(Scene* pScene)
 
 	float const aspectRatio{ m_Width / static_cast<float>(m_Height) };
 	float const fov{ tan(camera.fovAngle * TO_RADIANS/2) };
+	float const invWidth{ 1.f / m_Width };
+	float const invHeight{ 1.f / m_Height };
+	float const aspectFov{ aspectRatio * fov };
 
 	Matrix const cameraToWorld{ camera.CalculateCameraToWorld() };
+	Vector3 const cameraOrigin{ cameraToWorld.GetTranslation() };
 
 	std::for_each(std::execution::par_unseq, m_Pixels.begin(), m_Pixels.end(), [&](int const idx)
 	{
@@ -62,13 +66,13 @@ void Renderer::Render(Scene* pScene)
 		{
 			auto const offset{ SampleRay(currSample) };
 
-			float const x{ ((2 * (px + .5f + offset.x) / static_cast<float>(m_Width) - 1) * aspectRatio * fov) };
-			float const y{ ((1 - 2 * (py + .5f + offset.y) / static_cast<float>(m_Height)) * fov) };
+			float const x{ (2.f * (px + .5f + offset.x) * invWidth - 1.f) * aspectFov };
+			float const y{ (1.f - 2.f * (py + .5f + offset.y) * invHeight) * fov };
 
 			Vector3 const dirViewSpace{ x , y, 1.f };
 			Vector3 const dirWorldSpace{ (cameraToWorld.TransformVector(dirViewSpace)).Normalized() };
 
-			Ray const viewRay{ cameraToWorld.GetTranslation() , dirWorldSpace };
+			Ray const viewRay{ cameraOrigin, dirWorldSpace };
 
 			uint32_t bvhLeafNodeIdx{ std::numeric_limits<uint32_t>::max() };
 			HitRecord closestHit{};
