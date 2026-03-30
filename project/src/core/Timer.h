@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace dae
+namespace mau
 {
 	class Timer
 	{

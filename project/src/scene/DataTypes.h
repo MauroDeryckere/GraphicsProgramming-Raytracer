@@ -6,7 +6,7 @@
 
 #include "BVH.h"
 
-namespace dae
+namespace mau
 {
 #pragma region GEOMETRY
 	struct Sphere

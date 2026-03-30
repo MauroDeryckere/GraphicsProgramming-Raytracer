@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-namespace dae
+namespace mau
 {
 	struct Vector4;
 	struct Vector3

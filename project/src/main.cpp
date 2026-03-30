@@ -14,7 +14,7 @@
 #include "Renderer.h"
 #include "Scene.h"
 
-using namespace dae;
+using namespace mau;
 
 void PrintInfo();
 

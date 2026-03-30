@@ -3,7 +3,7 @@
 #include "../src/Vector4.h"
 #include "../src/Matrix.h"
 
-namespace dae
+namespace mau
 {
 	// W1
 	TEST(Vector3, DotProduct) {
@@ -13,7 +13,7 @@ namespace dae
 
 		Vector3 v1(1.0f, 2.0f, 3.0f);
 		Vector3 v2(4.0f, 5.0f, 6.0f);
-		EXPECT_EQ(32.0f, dae::Vector3::Dot(v1, v2));
+		EXPECT_EQ(32.0f, mau::Vector3::Dot(v1, v2));
 	}
 
 	// W1
@@ -32,7 +32,7 @@ namespace dae
 
 		Vector3 v1(1.0f, 2.0f, 3.0f);
 		Vector3 v2(4.0f, 5.0f, 6.0f);
-		EXPECT_EQ(dae::Vector3(-3.0f, 6.0f, -3.0f), dae::Vector3::Cross(v1, v2));
+		EXPECT_EQ(mau::Vector3(-3.0f, 6.0f, -3.0f), mau::Vector3::Cross(v1, v2));
 	}
 
 	// W1

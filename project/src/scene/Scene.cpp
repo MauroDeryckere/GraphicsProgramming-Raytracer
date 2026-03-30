@@ -8,7 +8,7 @@
 #include <ranges>
 #include <algorithm>
 
-namespace dae
+namespace mau
 {
 #pragma region Base Scene
 	//Initialize Scene with Default Solid Color Material (RED)
@@ -32,7 +32,7 @@ namespace dae
 		m_Materials.clear();
 	}
 
-	void dae::Scene::GetClosestHit(const Ray& ray, HitRecord& closestHit) const
+	void mau::Scene::GetClosestHit(const Ray& ray, HitRecord& closestHit) const
 	{
 		constexpr bool useBVH{ false };
 

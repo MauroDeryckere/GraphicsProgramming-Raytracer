@@ -15,7 +15,7 @@
 #include <execution>
 
 
-using namespace dae;
+using namespace mau;
 
 Renderer::Renderer(SDL_Window * pWindow) :
 	m_pWindow(pWindow),
@@ -91,7 +91,7 @@ bool Renderer::SaveBufferToImage() const
 	return SDL_SaveBMP(m_pBuffer, "RayTracing_Buffer.bmp");
 }
 
-ColorRGB dae::Renderer::CalculateIllumination(Scene* pScene, const Light& light, const HitRecord& closestHit, const Vector3& viewDir) const noexcept
+ColorRGB mau::Renderer::CalculateIllumination(Scene* pScene, const Light& light, const HitRecord& closestHit, const Vector3& viewDir) const noexcept
 {
 	uint32_t hits{ 0 };
 
@@ -194,7 +194,7 @@ ColorRGB dae::Renderer::CalculateIllumination(Scene* pScene, const Light& light,
 	return {};
 }
 
-Vector3 dae::Renderer::SampleRay(uint32_t currSample) const noexcept
+Vector3 mau::Renderer::SampleRay(uint32_t currSample) const noexcept
 {
 	switch(m_CurrSampleMode)
 	{
@@ -212,12 +212,12 @@ Vector3 dae::Renderer::SampleRay(uint32_t currSample) const noexcept
 	}
 }
 
-Vector3 dae::Renderer::SampleRandomSquare() const noexcept
+Vector3 mau::Renderer::SampleRandomSquare() const noexcept
 {
 	return {Random(0.f, 1.f) - .5f, Random(0.f, 1.f) - .5f, 0.f};
 }
 
-Vector3 dae::Renderer::SampleUniformSquare(uint32_t currSample) const noexcept
+Vector3 mau::Renderer::SampleUniformSquare(uint32_t currSample) const noexcept
 {
 
 	uint32_t gridSize{ static_cast<uint32_t>(std::sqrt(m_SampleCount)) };
@@ -246,7 +246,7 @@ Vector3 dae::Renderer::SampleUniformSquare(uint32_t currSample) const noexcept
 	};
 }
 
-void dae::Renderer::BoxFilter(ColorRGB& c) const noexcept
+void mau::Renderer::BoxFilter(ColorRGB& c) const noexcept
 {
 	c /= m_SampleCount;
 }

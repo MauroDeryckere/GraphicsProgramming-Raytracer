@@ -14,7 +14,7 @@
 //#include "SDL_egl.h"
 
 
-namespace dae
+namespace mau
 {
 	template<typename T>
 	constexpr T Random(T min, T max) noexcept

@@ -3,7 +3,7 @@
 
 #include "MathHelpers.h"
 
-namespace dae
+namespace mau
 {
 	struct ColorRGB final
 	{

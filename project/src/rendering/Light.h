@@ -5,7 +5,7 @@
 #include "DataTypes.h"
 
 #pragma region LIGHT
-namespace dae
+namespace mau
 {
 	enum class LightShape : uint8_t
 	{

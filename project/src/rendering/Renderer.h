@@ -8,7 +8,7 @@
 struct SDL_Window;
 struct SDL_Surface;
 
-namespace dae
+namespace mau
 {
 	class ColorRGB;
 	class Vector3;

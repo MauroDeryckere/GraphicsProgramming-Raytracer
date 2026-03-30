@@ -3,7 +3,7 @@
 
 #include "Maths.h"
 
-namespace dae
+namespace mau
 {
 	namespace BRDF
 	{

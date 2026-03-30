@@ -7,7 +7,7 @@
 
 #include <cassert>
 
-namespace dae
+namespace mau
 {
 #pragma region Material BASE
 	class Material

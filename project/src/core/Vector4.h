@@ -1,7 +1,7 @@
 #ifndef VECTOR4_H
 #define VECTOR4_H
 
-namespace dae
+namespace mau
 {
 	struct Vector3;
 	struct Vector4

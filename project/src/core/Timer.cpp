@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "SDL.h"
-using namespace dae;
+using namespace mau;
 
 Timer::Timer()
 {

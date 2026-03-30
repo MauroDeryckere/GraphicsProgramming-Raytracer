@@ -7,7 +7,7 @@
 #include "Maths.h"
 #include "Timer.h"
 
-namespace dae
+namespace mau
 {
 	struct Camera final
 	{

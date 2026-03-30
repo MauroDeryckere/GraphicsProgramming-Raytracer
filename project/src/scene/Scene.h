@@ -9,7 +9,7 @@
 #include "Light.h"
 #include "Camera.h"
 
-namespace dae
+namespace mau
 {
 	//Forward Declarations
 	class Timer;
@@ -30,7 +30,7 @@ namespace dae
 		Scene& operator=(Scene&&) noexcept = delete;
 
 		virtual void Initialize() = 0;
-		virtual void Update(dae::Timer* pTimer)
+		virtual void Update(mau::Timer* pTimer)
 		{
 			m_Camera.Update(pTimer);
 		}

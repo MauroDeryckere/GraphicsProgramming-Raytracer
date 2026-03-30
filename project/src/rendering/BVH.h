@@ -7,7 +7,7 @@
 #include <vector>
 #include "Vector3.h"
 
-namespace dae
+namespace mau
 {
 	struct BVHNode final
 	{
