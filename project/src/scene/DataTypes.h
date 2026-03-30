@@ -254,9 +254,17 @@ namespace mau
 	{
 		Vector3 origin{};
 		Vector3 direction{};
+		Vector3 reciprocal{}; //1/direction, precomputed for AABB slab tests
 
 		float min{ 0.0001f };
 		float max{ std::numeric_limits<float>::max() };
+
+		Ray() = default;
+		Ray(const Vector3& o, const Vector3& d, float tMin = 0.0001f, float tMax = std::numeric_limits<float>::max())
+			: origin{ o }, direction{ d }
+			, reciprocal{ 1.f / d.x, 1.f / d.y, 1.f / d.z }
+			, min{ tMin }, max{ tMax }
+		{}
 	};
 
 	struct HitRecord

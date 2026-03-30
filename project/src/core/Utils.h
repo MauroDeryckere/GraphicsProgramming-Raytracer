@@ -232,23 +232,23 @@ namespace mau
 #pragma region TriangeMesh HitTest
 		inline bool SlabTest_TriangleMesh(const TriangleMesh& mesh, const Ray& ray)
 		{
-			float const tx1{ (mesh.transformedMinAABB.x - ray.origin.x) / ray.direction.x };
-			float const tx2{ (mesh.transformedMaxAABB.x - ray.origin.x) / ray.direction.x };
+			float const tx1{ (mesh.transformedMinAABB.x - ray.origin.x) * ray.reciprocal.x };
+			float const tx2{ (mesh.transformedMaxAABB.x - ray.origin.x) * ray.reciprocal.x };
 
 			float tmin{ std::min(tx1, tx2) };
 			float tmax{ std::max(tx1, tx2) };
 
-			float const ty1{ (mesh.transformedMinAABB.y - ray.origin.y) / ray.direction.y };
-			float const ty2{ (mesh.transformedMaxAABB.y - ray.origin.y) / ray.direction.y };
+			float const ty1{ (mesh.transformedMinAABB.y - ray.origin.y) * ray.reciprocal.y };
+			float const ty2{ (mesh.transformedMaxAABB.y - ray.origin.y) * ray.reciprocal.y };
 
-			tmin = std::min(tmin, std::min(ty1, ty2));
-			tmax = std::max(tmax, std::max(ty1, ty2));
+			tmin = std::max(tmin, std::min(ty1, ty2));
+			tmax = std::min(tmax, std::max(ty1, ty2));
 
-			float const tz1{ (mesh.transformedMinAABB.z - ray.origin.z) / ray.direction.z };
-			float const tz2{ (mesh.transformedMaxAABB.z - ray.origin.z) / ray.direction.z };
+			float const tz1{ (mesh.transformedMinAABB.z - ray.origin.z) * ray.reciprocal.z };
+			float const tz2{ (mesh.transformedMaxAABB.z - ray.origin.z) * ray.reciprocal.z };
 
-			tmin = std::min(tmin, std::min(tz1, tz2));
-			tmax = std::max(tmax, std::max(tz1, tz2));
+			tmin = std::max(tmin, std::min(tz1, tz2));
+			tmax = std::min(tmax, std::max(tz1, tz2));
 
 			return tmax > 0 && tmax >= tmin;
 		}
@@ -297,27 +297,27 @@ namespace mau
 #pragma endregion
 
 #pragma region BVH HitTest
-		inline bool IntersectAABB(const Ray& ray, const Vector3& bmin, const Vector3& bmax)
+		inline bool IntersectAABB(const Ray& ray, const Vector3& bmin, const Vector3& bmax, float tMaxCurrent = std::numeric_limits<float>::max())
 		{
-			float tx1 = (bmin.x - ray.origin.x) / ray.direction.x;
-			float tx2 = (bmax.x - ray.origin.x) / ray.direction.x;
+			float tx1 = (bmin.x - ray.origin.x) * ray.reciprocal.x;
+			float tx2 = (bmax.x - ray.origin.x) * ray.reciprocal.x;
 
 			float tmin = std::min(tx1, tx2);
 			float tmax = std::max(tx1, tx2);
 
-			float ty1 = (bmin.y - ray.origin.y) / ray.direction.y;
-			float ty2 = (bmax.y - ray.origin.y) / ray.direction.y;
+			float ty1 = (bmin.y - ray.origin.y) * ray.reciprocal.y;
+			float ty2 = (bmax.y - ray.origin.y) * ray.reciprocal.y;
 
 			tmin = std::max(tmin, std::min(ty1, ty2));
 			tmax = std::min(tmax, std::max(ty1, ty2));
 
-			float tz1 = (bmin.z - ray.origin.z) / ray.direction.z;
-			float tz2 = (bmax.z - ray.origin.z) / ray.direction.z;
+			float tz1 = (bmin.z - ray.origin.z) * ray.reciprocal.z;
+			float tz2 = (bmax.z - ray.origin.z) * ray.reciprocal.z;
 
 			tmin = std::max(tmin, std::min(tz1, tz2));
 			tmax = std::min(tmax, std::max(tz1, tz2));
 
-			return tmax >= tmin && tmin < ray.max && tmax > 0;
+			return tmax >= tmin && tmin < tMaxCurrent && tmax > 0;
 		}
 
 		inline bool HitTest_BVH(const Ray& ray, const TriangleMesh& mesh, const std::vector<BVHNode>& bvh, uint32_t nodeIdx, HitRecord& hitRecord, uint32_t& leafNodeIdx, bool ignoreHitRecord = false)
@@ -384,20 +384,20 @@ namespace mau
 
 		inline bool HitTest_AABBWireframe(const Ray& ray, const Vector3& bmin, const Vector3& bmax, float& tOut, float edgeWidth = 0.03f)
 		{
-			float tx1 = (bmin.x - ray.origin.x) / ray.direction.x;
-			float tx2 = (bmax.x - ray.origin.x) / ray.direction.x;
+			float tx1 = (bmin.x - ray.origin.x) * ray.reciprocal.x;
+			float tx2 = (bmax.x - ray.origin.x) * ray.reciprocal.x;
 
 			float tmin = std::min(tx1, tx2);
 			float tmax = std::max(tx1, tx2);
 
-			float ty1 = (bmin.y - ray.origin.y) / ray.direction.y;
-			float ty2 = (bmax.y - ray.origin.y) / ray.direction.y;
+			float ty1 = (bmin.y - ray.origin.y) * ray.reciprocal.y;
+			float ty2 = (bmax.y - ray.origin.y) * ray.reciprocal.y;
 
 			tmin = std::max(tmin, std::min(ty1, ty2));
 			tmax = std::min(tmax, std::max(ty1, ty2));
 
-			float tz1 = (bmin.z - ray.origin.z) / ray.direction.z;
-			float tz2 = (bmax.z - ray.origin.z) / ray.direction.z;
+			float tz1 = (bmin.z - ray.origin.z) * ray.reciprocal.z;
+			float tz2 = (bmax.z - ray.origin.z) * ray.reciprocal.z;
 
 			tmin = std::max(tmin, std::min(tz1, tz2));
 			tmax = std::min(tmax, std::max(tz1, tz2));
