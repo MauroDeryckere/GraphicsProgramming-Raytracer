@@ -38,6 +38,7 @@ namespace mau
 		bool SaveBufferToImage() const;
 
 		uint32_t GetAccumulatedFrames() const noexcept { return m_AccumulatedFrames; }
+		void ResetAccumulation() noexcept;
 
 		void CycleLighMode() noexcept
 		{
@@ -173,8 +174,6 @@ namespace mau
 		bool m_ProgressiveEnabled{ true };
 		std::vector<ColorRGB> m_AccumulationBuffer{};
 		uint32_t m_AccumulatedFrames{ 0 };
-
-		void ResetAccumulation() noexcept;
 
 		[[nodiscard]] ColorRGB CalculateIllumination(Scene* pScene, const Light& light, const HitRecord& closestHit, const Vector3& viewDir) const noexcept;
 

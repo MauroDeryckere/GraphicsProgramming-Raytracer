@@ -49,6 +49,9 @@ F6: Increase samples per frame<br>
 F7: Cycle tone mapping (none / Reinhard Jodie / ACES)<br>
 F8: Toggle progressive rendering<br>
 
+**Scenes**<br>
+1-9: Switch scene<br>
+
 ## Building
 
 The project uses CMake.

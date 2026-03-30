@@ -13,7 +13,7 @@
 //Project includes
 #include "Timer.h"
 #include "Renderer.h"
-#include "Scene.h"
+#include "SceneManager.h"
 
 using namespace mau;
 
@@ -47,22 +47,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 	auto const pTimer = std::make_unique<Timer>();
 	auto const pRenderer = std::make_unique<Renderer>(pWindow);
 
-	//auto const pScene = std::make_unique<Scene_BasicGeometry>();
-	//auto const pScene = std::make_unique<Scene_PointLights>();
-	//auto const pScene = std::make_unique<Scene_CookTorrence>();
-	//auto const pScene = std::make_unique<Scene_LambertPhong>();
-
-	//auto const pScene = std::make_unique<Scene_Triangle>();
-	//auto const pScene = std::make_unique<Scene_MeshTest>();
-
-	auto const pScene = std::make_unique<Scene_Reference>();
-	//auto const pScene = std::make_unique<Scene_Bunny>();
-
-	//auto const pScene = std::make_unique<Scene_SoftShadows>();
+	SceneManager sceneManager{};
 
 	PrintInfo();
 
-	pScene->Initialize();
+	sceneManager.LoadScene(6, pRenderer.get()); //Reference scene
 
 	//Start loop
 	pTimer->Start();
@@ -116,14 +105,24 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 					pRenderer->ToggleProgressive();
 				}
 
+				//Scene selection (1-9)
+				if (e.key.keysym.scancode >= SDL_SCANCODE_1 && e.key.keysym.scancode <= SDL_SCANCODE_9)
+				{
+					uint8_t const sceneIndex{ static_cast<uint8_t>(e.key.keysym.scancode - SDL_SCANCODE_1) };
+					if (sceneIndex < sceneManager.GetSceneCount())
+					{
+						sceneManager.LoadScene(sceneIndex, pRenderer.get());
+					}
+				}
+
 				break;
 			}
 		}
 
 		//--------- Update ---------
-		pScene->Update(pTimer.get());
+		sceneManager.GetActiveScene()->Update(pTimer.get());
 		//--------- Render ---------
-		pRenderer->Render(pScene.get());
+		pRenderer->Render(sceneManager.GetActiveScene());
 
 		//--------- Timer ---------
 		pTimer->Update();
@@ -164,6 +163,16 @@ void PrintInfo()
 	std::cout << "[F6]: Increase Samples Per Frame\n";
 	std::cout << "[F7]: Cycle Tone Mapping\n";
 	std::cout << "[F8]: Toggle Progressive Rendering\n\n";
+
+	std::cout << "[1]: Basic Geometry\n";
+	std::cout << "[2]: Point Lights\n";
+	std::cout << "[3]: Cook-Torrance\n";
+	std::cout << "[4]: Lambert-Phong\n";
+	std::cout << "[5]: Triangle\n";
+	std::cout << "[6]: Mesh Test\n";
+	std::cout << "[7]: Reference\n";
+	std::cout << "[8]: Bunny\n";
+	std::cout << "[9]: Soft Shadows\n\n";
 
 	std::cout << "[WASD]: Move Camera\n";
 	std::cout << "[LMB + Drag]: Rotate Camera\n\n";
