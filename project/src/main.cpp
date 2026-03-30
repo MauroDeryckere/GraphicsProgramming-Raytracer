@@ -111,6 +111,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 				{
 					pRenderer->CycleToneMapMode();
 				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F8)
+				{
+					pRenderer->ToggleProgressive();
+				}
 
 				break;
 			}
@@ -150,6 +154,6 @@ void PrintInfo()
 {
 	std::cout << "Raytracer project Mauro Deryckere\n";
 	std::cout << "Keybinds: \n";
-	std::cout << "X: Screenshot\nF2: Shadows on/off\nF3: Cycle light mode\nF4: Cycle sample mode\nF5: Decrease samples\nF6: Increase samples\nF7: Cycle tone mapping\n\n";
+	std::cout << "X: Screenshot\nF2: Shadows on/off\nF3: Cycle light mode\nF4: Cycle sample mode\nF5: Decrease samples per frame\nF6: Increase samples per frame\nF7: Cycle tone mapping\nF8: Toggle progressive rendering\n\n";
 	std::cout << "WASD: Move camera\nHold LMB and move: rotate camera\n\n";
 }

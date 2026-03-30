@@ -62,8 +62,20 @@ namespace mau
 			ResetAccumulation();
 		}
 
-		void IncreaseSamples() noexcept { m_SampleCount *= 2; ResetAccumulation(); }
-		void DecreaseSamples() noexcept { m_SampleCount = std::max<uint32_t>(m_SampleCount / 2, 1); ResetAccumulation(); }
+		void ToggleProgressive() noexcept { m_ProgressiveEnabled = !m_ProgressiveEnabled; ResetAccumulation(); }
+
+		void IncreaseSamples() noexcept
+		{
+			m_SampleCount *= 2;
+			ResetAccumulation();
+			std::cout << "Samples per " << (m_ProgressiveEnabled ? "frame" : "pixel") << ": " << m_SampleCount << '\n';
+		}
+		void DecreaseSamples() noexcept
+		{
+			m_SampleCount = std::max<uint32_t>(m_SampleCount / 2, 1);
+			ResetAccumulation();
+			std::cout << "Samples per " << (m_ProgressiveEnabled ? "frame" : "pixel") << ": " << m_SampleCount << '\n';
+		}
 
 	private:
 		SDL_Window* m_pWindow{};
@@ -107,6 +119,7 @@ namespace mau
 		};
 		ToneMapMode m_CurrToneMapMode{ ToneMapMode::None }; //Cycle through with F7
 
+		bool m_ProgressiveEnabled{ true };
 		std::vector<ColorRGB> m_AccumulationBuffer{};
 		uint32_t m_AccumulatedFrames{ 0 };
 

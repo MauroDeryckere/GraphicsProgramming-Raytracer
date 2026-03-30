@@ -23,7 +23,7 @@ namespace mau
 	{
 	public:
 		Scene();
-		virtual ~Scene() = default;
+		virtual ~Scene();
 
 		Scene(const Scene&) = delete;
 		Scene(Scene&&) noexcept = delete;
@@ -41,6 +41,8 @@ namespace mau
 		void GetClosestHit(const Ray& ray, HitRecord& closestHit) const;
 		[[nodiscard]] bool DoesHit(const Ray& ray) const;
 
+		[[nodiscard]] bool IsDirty() const noexcept { return m_IsDirty; }
+
 		std::vector<Plane> const& GetPlaneGeometries() const { return m_PlaneGeometries; }
 		std::vector<Sphere>const& GetSphereGeometries() const { return m_SphereGeometries; }
 		std::vector<Light> const& GetLights() const { return m_Lights; }
@@ -56,6 +58,7 @@ namespace mau
 		std::vector<std::unique_ptr<Material>> m_Materials{};
 
 		Camera m_Camera{};
+		bool m_IsDirty{ false };
 
 		Sphere* AddSphere(Vector3 const& origin, float radius, uint8_t materialIndex = 0);
 		Plane* AddPlane(Vector3 const& origin, Vector3 const& normal, uint8_t materialIndex = 0);

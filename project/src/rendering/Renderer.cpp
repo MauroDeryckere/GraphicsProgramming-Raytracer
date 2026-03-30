@@ -36,12 +36,15 @@ void Renderer::Render(Scene* pScene)
 	Camera& camera{ pScene->GetCamera() };
 	auto const& lights { pScene->GetLights() };
 
-	if (camera.IsDirty())
+	if (m_ProgressiveEnabled && (camera.IsDirty() || pScene->IsDirty()))
 	{
 		ResetAccumulation();
 	}
 
-	++m_AccumulatedFrames;
+	if (m_ProgressiveEnabled)
+	{
+		++m_AccumulatedFrames;
+	}
 
 	float const aspectRatio{ m_Width / static_cast<float>(m_Height) };
 	float const fov{ tan(camera.fovAngle * TO_RADIANS/2) };
@@ -81,11 +84,16 @@ void Renderer::Render(Scene* pScene)
 
 		BoxFilter(frameColor);
 
-		//Accumulate across frames
-		m_AccumulationBuffer[idx] += frameColor;
-
-		//Display averaged result
-		ColorRGB displayColor{ m_AccumulationBuffer[idx] / static_cast<float>(m_AccumulatedFrames) };
+		ColorRGB displayColor{};
+		if (m_ProgressiveEnabled)
+		{
+			m_AccumulationBuffer[idx] += frameColor;
+			displayColor = m_AccumulationBuffer[idx] / static_cast<float>(m_AccumulatedFrames);
+		}
+		else
+		{
+			displayColor = frameColor;
+		}
 
 		switch (m_CurrToneMapMode)
 		{

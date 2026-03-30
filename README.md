@@ -44,9 +44,10 @@ X: Screenshot<br>
 F2: Toggle shadows<br>
 F3: Cycle light mode (observed area / radiance / BRDF / combined)<br>
 F4: Cycle sample mode (random / uniform)<br>
-F5: Decrease samples per pixel<br>
-F6: Increase samples per pixel<br>
+F5: Decrease samples per frame<br>
+F6: Increase samples per frame<br>
 F7: Cycle tone mapping (none / Reinhard Jodie / ACES)<br>
+F8: Toggle progressive rendering<br>
 
 ## Building
 

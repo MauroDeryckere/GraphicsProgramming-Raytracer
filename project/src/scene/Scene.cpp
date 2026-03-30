@@ -10,6 +10,8 @@
 
 namespace mau
 {
+	Scene::~Scene() = default;
+
 	Scene::Scene()
 	{
 		m_Materials.emplace_back(std::make_unique<Material_SolidColor>(ColorRGB{ 1, 0, 0 }));
@@ -284,12 +286,12 @@ namespace mau
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, 1.f)) };
-		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .6f)) };
-		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .1f)) };
-		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, 1.f)) };
-		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .6f)) };
-		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .1f)) };
+		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, 1.f)) };
+		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, .6f)) };
+		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, .1f)) };
+		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, 1.f)) };
+		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, .6f)) };
+		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, .1f)) };
 
 		auto const matLambertGrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f}, 1.f)) };
 
@@ -401,12 +403,12 @@ namespace mau
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, 1.f)) };
-		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .6f)) };
-		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .1f)) };
-		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, 1.f)) };
-		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .6f)) };
-		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .1f)) };
+		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, 1.f)) };
+		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, .6f)) };
+		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, .1f)) };
+		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, 1.f)) };
+		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, .6f)) };
+		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, .1f)) };
 
 		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
 		auto const matLambert_White{ AddMaterial(std::make_unique<Material_Lambert>(colors::White, 1.f)) };
@@ -461,6 +463,8 @@ namespace mau
 			m.RotateY(yawAngle);
 			m.UpdateTransforms();
 		}
+
+		m_IsDirty = true;
 	}
 
 	void Scene_Bunny::Initialize()
@@ -519,12 +523,12 @@ namespace mau
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, 1.f)) };
-		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .6f)) };
-		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .1f)) };
-		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, 1.f)) };
-		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .6f)) };
-		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .1f)) };
+		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, 1.f)) };
+		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, .6f)) };
+		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.972f, .960f, .915f}, 1.f, .1f)) };
+		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, 1.f)) };
+		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, .6f)) };
+		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>(ColorRGB{.75f, .75f, .75f}, 0.f, .1f)) };
 
 		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
 
