@@ -70,34 +70,6 @@ namespace mau
 		uint8_t AddMaterial(std::unique_ptr<Material> pMaterial);
 	};
 
-	class Scene_BasicGeometry final : public Scene
-	{
-	public:
-		Scene_BasicGeometry() = default;
-		~Scene_BasicGeometry() override = default;
-
-		Scene_BasicGeometry(const Scene_BasicGeometry&) = delete;
-		Scene_BasicGeometry(Scene_BasicGeometry&&) noexcept = delete;
-		Scene_BasicGeometry& operator=(const Scene_BasicGeometry&) = delete;
-		Scene_BasicGeometry& operator=(Scene_BasicGeometry&&) noexcept = delete;
-
-		void Initialize() override;
-	};
-
-	class Scene_PointLights final : public Scene
-	{
-	public:
-		Scene_PointLights() = default;
-		~Scene_PointLights() override = default;
-
-		Scene_PointLights(const Scene_PointLights&) = delete;
-		Scene_PointLights(Scene_PointLights&&) noexcept = delete;
-		Scene_PointLights& operator=(const Scene_PointLights&) = delete;
-		Scene_PointLights& operator=(Scene_PointLights&&) noexcept = delete;
-
-		void Initialize() override;
-	};
-
 	class Scene_CookTorrence final : public Scene
 	{
 	public:
@@ -124,35 +96,6 @@ namespace mau
 		Scene_LambertPhong& operator=(Scene_LambertPhong&&) noexcept = delete;
 
 		void Initialize() override;
-	};
-
-	class Scene_Triangle final : public Scene
-	{
-	public:
-		Scene_Triangle() = default;
-		~Scene_Triangle() override = default;
-
-		Scene_Triangle(const Scene_Triangle&) = delete;
-		Scene_Triangle(Scene_Triangle&&) noexcept = delete;
-		Scene_Triangle& operator=(const Scene_Triangle&) = delete;
-		Scene_Triangle& operator=(Scene_Triangle&&) noexcept = delete;
-
-		void Initialize() override;
-		};
-
-	class Scene_MeshTest final : public Scene
-	{
-	public:
-		Scene_MeshTest() = default;
-		~Scene_MeshTest() override = default;
-
-		Scene_MeshTest(const Scene_MeshTest&) = delete;
-		Scene_MeshTest(Scene_MeshTest&&) noexcept = delete;
-		Scene_MeshTest& operator=(const Scene_MeshTest&) = delete;
-		Scene_MeshTest& operator=(Scene_MeshTest&&) noexcept = delete;
-
-		void Initialize() override;
-		void Update(Timer* pTimer) override;
 	};
 
 	class Scene_Reference final : public Scene

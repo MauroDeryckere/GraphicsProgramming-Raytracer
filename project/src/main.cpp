@@ -51,7 +51,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 
 	PrintInfo();
 
-	sceneManager.LoadScene(6, pRenderer.get()); //Reference scene
+	sceneManager.LoadScene(2, pRenderer.get()); //Reference scene
 
 	//Start loop
 	pTimer->Start();
@@ -164,15 +164,11 @@ void PrintInfo()
 	std::cout << "[F7]: Cycle Tone Mapping\n";
 	std::cout << "[F8]: Toggle Progressive Rendering\n\n";
 
-	std::cout << "[1]: Basic Geometry\n";
-	std::cout << "[2]: Point Lights\n";
-	std::cout << "[3]: Cook-Torrance\n";
-	std::cout << "[4]: Lambert-Phong\n";
-	std::cout << "[5]: Triangle\n";
-	std::cout << "[6]: Mesh Test\n";
-	std::cout << "[7]: Reference\n";
-	std::cout << "[8]: Bunny\n";
-	std::cout << "[9]: Soft Shadows\n\n";
+	std::cout << "[1]: Cook-Torrance\n";
+	std::cout << "[2]: Lambert-Phong\n";
+	std::cout << "[3]: Reference\n";
+	std::cout << "[4]: Bunny\n";
+	std::cout << "[5]: Soft Shadows\n\n";
 
 	std::cout << "[WASD]: Move Camera\n";
 	std::cout << "[LMB + Drag]: Rotate Camera\n\n";

@@ -17,12 +17,8 @@ namespace mau
 	public:
 		SceneManager()
 		{
-			RegisterScene<Scene_BasicGeometry>("Basic Geometry");
-			RegisterScene<Scene_PointLights>("Point Lights");
 			RegisterScene<Scene_CookTorrence>("Cook-Torrance");
 			RegisterScene<Scene_LambertPhong>("Lambert-Phong");
-			RegisterScene<Scene_Triangle>("Triangle");
-			RegisterScene<Scene_MeshTest>("Mesh Test");
 			RegisterScene<Scene_Reference>("Reference");
 			RegisterScene<Scene_Bunny>("Bunny");
 			RegisterScene<Scene_SoftShadows>("Soft Shadows");

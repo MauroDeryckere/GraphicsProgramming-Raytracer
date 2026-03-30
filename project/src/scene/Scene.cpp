@@ -227,60 +227,6 @@ namespace mau
 		return static_cast<uint8_t>(m_Materials.size() - 1);
 	}
 
-	void Scene_BasicGeometry::Initialize()
-	{
-		//default: Material id0 >> SolidColor Material (RED)
-		uint8_t constexpr matId_Solid_Red{ 0 };
-		uint8_t const matId_Solid_Blue{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Blue)) };
-
-		uint8_t const matId_Solid_Yellow{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Yellow)) };
-		uint8_t const matId_Solid_Green { AddMaterial(std::make_unique<Material_SolidColor>(colors::Green)) };
-		uint8_t const matId_Solid_Magenta{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Magenta)) };
-
-		//Spheres
-		AddSphere({ -25.f, 0.f, 100.f }, 50.f, matId_Solid_Red);
-		AddSphere({ 25.f, 0.f, 100.f }, 50.f, matId_Solid_Blue);
-
-		//Planes
-		AddPlane({ -75.f, 0.f, 0.f }, { 1.f, 0.f,0.f }, matId_Solid_Green);
-		AddPlane({ 75.f, 0.f, 0.f }, { -1.f, 0.f,0.f }, matId_Solid_Green);
-		AddPlane({ 0.f, -75.f, 0.f }, { 0.f, 1.f,0.f }, matId_Solid_Yellow);
-		AddPlane({ 0.f, 75.f, 0.f }, { 0.f, -1.f,0.f }, matId_Solid_Yellow);
-		AddPlane({ 0.f, 0.f, 125.f }, { 0.f, 0.f,-1.f }, matId_Solid_Magenta);
-	}
-
-	void Scene_PointLights::Initialize()
-	{
-		m_Camera.origin = { 0.f, 3.f, -9.f };
-		m_Camera.fovAngle = 45.f;
-
-		//default: Material id0 >> SolidColor Material (RED)
-		uint8_t constexpr matId_Solid_Red{ 0 };
-		uint8_t const matId_Solid_Blue{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Blue)) };
-
-		uint8_t const matId_Solid_Yellow{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Yellow)) };
-		uint8_t const matId_Solid_Green{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Green)) };
-		uint8_t const matId_Solid_Magenta{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Magenta)) };
-
-		//Planes
-		AddPlane({ -5.f, 0.f, 0.f }, { 1.f, 0.f,0.f }, matId_Solid_Green);
-		AddPlane({ 5.f, 0.f, 0.f }, { -1.f, 0.f,0.f }, matId_Solid_Green);
-		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f,0.f }, matId_Solid_Yellow);
-		AddPlane({ 0.f, 10.f, 0.f }, { 0.f, -1.f,0.f }, matId_Solid_Yellow);
-		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f,-1.f }, matId_Solid_Magenta);
-
-		//Spheres
-		AddSphere({ -1.75f, 1.f, 0.f }, .75f, matId_Solid_Red);
-		AddSphere({ 0.f, 1.f, 0.f }, .75f, matId_Solid_Blue);
-		AddSphere({ 1.75f, 1.f, 0.f }, .75f, matId_Solid_Red);
-		AddSphere({ -1.75f, 3.f, 0.f }, .75f, matId_Solid_Blue);
-		AddSphere({ 0.f, 3.f, 0.f }, .75f, matId_Solid_Red);
-		AddSphere({ 1.75f, 3.f, 0.f }, .75f, matId_Solid_Blue);
-
-		//Light
-		AddPointLight({ 0.f, 5.f, -5.f }, 70.f, colors::White);
-	}
-
 	void Scene_CookTorrence::Initialize()
 	{
 		m_Camera.origin = { 0.f, 3.f, -9.f };
@@ -333,68 +279,6 @@ namespace mau
 
 		AddPointLight({ 0.f, 5.f, 5.f }, 25.f, colors::White);
 		AddPointLight({ 0.f, 2.5f, -5.f }, 25.f, colors::White);
-	}
-
-	void Scene_Triangle::Initialize()
-	{
-		m_Camera.origin = { 0.f, 1.f, -5.f };
-		m_Camera.fovAngle = 45.f;
-
-		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
-		auto const matLambert_White{ AddMaterial(std::make_unique<Material_Lambert>(colors::White, 1.f)) };
-
-		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f, -1.f }, matLambert_GrayBlue);
-		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matLambert_GrayBlue);
-		AddPlane({ 0.f, 10.f, 0.f }, { 0.f, -1.f, 0.f }, matLambert_GrayBlue);
-		AddPlane({ 5.f, 0.f, 0.f }, { -1.f, 0.f, 0.f }, matLambert_GrayBlue);
-		AddPlane({ -5.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, matLambert_GrayBlue);
-
-		Triangle const baseTriangle{ {-.75f, 1.5f, 0.f}, {.75f, 0.f, 0.f }, {-.75f, 0.f, 0.f} };
-		auto m{ AddTriangleMesh(TriangleCullMode::FrontFaceCulling, matLambert_White) };
-		m->AppendTriangle(baseTriangle, true);
-		m->Translate({ 0.f, .5f, 0.f });
-		m->UpdateTransforms();
-
-		//Lights
-		AddPointLight({ 0.f, 5.f, 5.f }, 50.f, { 1.f, .61f, .45f });
-		AddPointLight({ -2.5f, 5.f, -5.f }, 70.f, { 1.f, .80f, .45f });
-		AddPointLight({ 2.5f, 2.5f, -5.f }, 50.f, { .34f, .47f, .68f });
-	}
-
-	void Scene_MeshTest::Initialize()
-	{
-		m_Camera.origin = { 0.f, 1.f, -5.f };
-		m_Camera.fovAngle = 45.f;
-
-		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
-		auto const matLambert_White{ AddMaterial(std::make_unique<Material_Lambert>(colors::White, 1.f)) };
-
-		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f, -1.f }, matLambert_GrayBlue);
-		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matLambert_GrayBlue);
-		AddPlane({ 0.f, 10.f, 0.f }, { 0.f, -1.f, 0.f }, matLambert_GrayBlue);
-		AddPlane({ 5.f, 0.f, 0.f }, { -1.f, 0.f, 0.f }, matLambert_GrayBlue);
-		AddPlane({ -5.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, matLambert_GrayBlue);
-
-		auto pMesh = AddTriangleMesh(TriangleCullMode::BackFaceCulling, matLambert_White);
-		Utils::ParseOBJ("resources/simple_object.obj",
-			pMesh->positions,
-			pMesh->normals,
-			pMesh->indices);
-
-		pMesh->Scale({ .7f, .7f, .7f });
-		pMesh->Translate({ 0.f, 1.f, 0.f });
-
-		pMesh->UpdateTransforms();
-
-		//Lights
-		AddPointLight({ 0.f, 5.f, 5.f }, 50.f, { 1.f, .61f, .45f });
-		AddPointLight({ -2.5f, 5.f, -5.f }, 70.f, { 1.f, .80f, .45f });
-		AddPointLight({ 2.5f, 2.5f, -5.f }, 50.f, { .34f, .47f, .68f });
-	}
-
-	void Scene_MeshTest::Update(Timer* pTimer)
-	{
-		Scene::Update(pTimer);
 	}
 
 	void Scene_Reference::Initialize()
