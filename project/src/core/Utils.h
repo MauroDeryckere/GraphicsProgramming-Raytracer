@@ -56,11 +56,12 @@ namespace mau
 				return false;
 			}
 
-			float t{ (-b - sqrt(d)) / 2 * a };
+			float const denom{ 2.f * a };
+			float t{ (-b - sqrt(d)) / denom };
 
 			if (t > ray.max || t < ray.min)
 			{
-				t = (-b + sqrt(d)) / 2 * a;
+				t = (-b + sqrt(d)) / denom;
 			}
 
 			if (t > ray.max || t < ray.min)
