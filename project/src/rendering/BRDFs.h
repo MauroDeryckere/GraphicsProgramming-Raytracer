@@ -46,7 +46,10 @@ namespace mau
 		 */
 		static ColorRGB FresnelFunction_Schlick(const Vector3& h, const Vector3& v, const ColorRGB& f0)
 		{
-			return f0 + (1.f - f0) * std::pow(1 - Vector3::Dot(h, v), 5);
+			float const oneMinusDot{ 1.f - Vector3::Dot(h, v) };
+			float const omd2{ oneMinusDot * oneMinusDot };
+			float const omd5{ omd2 * omd2 * oneMinusDot };
+			return f0 + (1.f - f0) * omd5;
 		}
 
 		/**
@@ -58,9 +61,10 @@ namespace mau
 		 */
 		static float NormalDistribution_GGX(const Vector3& n, const Vector3& h, float roughness)
 		{
-			auto const a{ roughness * roughness };
-			auto const dot{ Vector3::Dot(n, h) };
-			return (a * a) / (PI * Square(dot * dot * (a * a - 1) + 1));
+			float const a2{ roughness * roughness * roughness * roughness }; //a^4 = (roughness^2)^2
+			float const nDotH{ Vector3::Dot(n, h) };
+			float const denom{ nDotH * nDotH * (a2 - 1.f) + 1.f };
+			return a2 / (PI * denom * denom);
 		}
 
 
@@ -71,12 +75,9 @@ namespace mau
 		 * \param roughness Roughness of the material
 		 * \return BRDF Geometry Term using SchlickGGX
 		 */
-		static float GeometryFunction_SchlickGGX(const Vector3& n, const Vector3& v, float roughness)
+		static float GeometryFunction_SchlickGGX(float nDotV, float kDirect)
 		{
-			float const a{ roughness * roughness };
-			float const kDirect{ ((a + 1) * (a + 1)) / 8};
-			
-			return Vector3::Dot(n, v) / (Vector3::Dot(n, v) * (1 - kDirect) + kDirect);
+			return nDotV / (nDotV * (1.f - kDirect) + kDirect);
 		}
 
 		/**
@@ -89,7 +90,17 @@ namespace mau
 		 */
 		static float GeometryFunction_Smith(const Vector3& n, const Vector3& v, const Vector3& l, float roughness)
 		{
-			return GeometryFunction_SchlickGGX(n, v, roughness) * GeometryFunction_SchlickGGX(n, l, roughness);
+			float const a{ roughness * roughness };
+			float const kDirect{ ((a + 1.f) * (a + 1.f)) / 8.f };
+			return GeometryFunction_SchlickGGX(Vector3::Dot(n, v), kDirect)
+				 * GeometryFunction_SchlickGGX(Vector3::Dot(n, l), kDirect);
+		}
+
+		static float GeometryFunction_Smith(float nDotV, float nDotL, float roughness)
+		{
+			float const a{ roughness * roughness };
+			float const kDirect{ ((a + 1.f) * (a + 1.f)) / 8.f };
+			return GeometryFunction_SchlickGGX(nDotV, kDirect) * GeometryFunction_SchlickGGX(nDotL, kDirect);
 		}
 
 	}

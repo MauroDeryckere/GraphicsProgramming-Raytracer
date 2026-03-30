@@ -105,7 +105,8 @@ namespace mau
 	{
 	public:
 		Material_CookTorrence(const ColorRGB& albedo, float metalness, float roughness) :
-			m_Albedo(albedo), m_Metalness(metalness), m_Roughness(roughness)
+			m_Albedo(albedo), m_Metalness(metalness), m_Roughness(roughness),
+			m_F0{ (metalness == 0.f) ? ColorRGB{ 0.04f, 0.04f, 0.04f } : albedo }
 		{
 			assert(m_Metalness == 1.f || m_Metalness == 0.f);
 			assert(m_Roughness != 0.f);
@@ -113,33 +114,16 @@ namespace mau
 
 		ColorRGB Shade(const HitRecord& hitRecord = {}, const Vector3& l = {}, const Vector3& v = {}) override
 		{
-			if (m_Roughness == 0.f)
-			{
-				return {};
-			}
-
-			ColorRGB const f0{ (m_Metalness == 0.f) ? ColorRGB{ 0.04f, 0.04f, 0.04f } : m_Albedo }; //specular color
-
 			Vector3 const h{ (v + l).Normalized() };
 
-			auto const F{ BRDF::FresnelFunction_Schlick(h, v, f0) };
+			float const nDotV{ Vector3::Dot(hitRecord.normal, v) };
+			float const nDotL{ Vector3::Dot(hitRecord.normal, l) };
+
+			auto const F{ BRDF::FresnelFunction_Schlick(h, v, m_F0) };
 			auto const D{ BRDF::NormalDistribution_GGX(hitRecord.normal, h, m_Roughness) };
-			auto const G{ BRDF::GeometryFunction_Smith(hitRecord.normal, v, l, m_Roughness) };
+			auto const G{ BRDF::GeometryFunction_Smith(nDotV, nDotL, m_Roughness) };
 
-			float const dot1{ Vector3::Dot(v, hitRecord.normal) };
-			float const dot2{ Vector3::Dot(l, hitRecord.normal) };
-
-			//Not necesary with observed area check in renderer
-			//if (dot1 < 0.f)
-			//{
-			//	dot1 = 0.f;
-			//}
-			//if (dot2 < 0.f)
-			//{
-			//	dot2 = 0.f;
-			//}
-
-			auto const specular{ (D * F * G) / (4 * dot1 * dot2) };
+			auto const specular{ (D * F * G) / (4.f * nDotV * nDotL) };
 			auto const diffuse{ (m_Metalness == 0.f) ? BRDF::Lambert(ColorRGB{1.f,1.f,1.f} - F, m_Albedo)
 															 : BRDF::Lambert(0.f, m_Albedo) };
 
@@ -150,6 +134,7 @@ namespace mau
 		ColorRGB m_Albedo{ 0.955f, 0.637f, 0.538f }; //Copper
 		float m_Metalness{ 1.0f };
 		float m_Roughness{ 0.1f }; // [1.0 > 0.0] >> [ROUGH > SMOOTH]
+		ColorRGB m_F0{ 0.04f, 0.04f, 0.04f }; //Precomputed base reflectivity
 	};
 #pragma endregion
 }

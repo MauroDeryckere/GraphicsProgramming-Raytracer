@@ -17,25 +17,19 @@
 namespace mau
 {
 	template<typename T>
-	constexpr T Random(T min, T max) noexcept
+	T Random(T min, T max) noexcept
 		requires (std::is_floating_point_v<T> || std::is_integral_v<T>)
 	{
+		thread_local std::mt19937 generator{ std::random_device{}() };
+
 		if constexpr (std::is_floating_point_v<T>)
 		{
-			thread_local std::uniform_real_distribution<T> distribution(min, max);
-			thread_local std::mt19937 generator;
-
-			return distribution(generator);
+			return std::uniform_real_distribution<T>{min, max}(generator);
 		}
-
 		else if constexpr (std::is_integral_v<T>)
 		{
-			thread_local std::uniform_int_distribution<T> distribution(min, max);
-			thread_local std::mt19937 generator;
-			return distribution(generator);
+			return std::uniform_int_distribution<T>{min, max}(generator);
 		}
-
-		return std::numeric_limits<T>::min();
 	}
 
 	namespace GeometryUtils
