@@ -27,28 +27,36 @@ Renderer::Renderer(SDL_Window * pWindow) :
 
 	m_Pixels.resize(m_Width * m_Height);
 	std::iota(m_Pixels.begin(), m_Pixels.end(), 0);
+
+	m_AccumulationBuffer.resize(m_Width * m_Height);
 }
 
-void Renderer::Render(Scene* pScene) const
+void Renderer::Render(Scene* pScene)
 {
 	Camera& camera{ pScene->GetCamera() };
 	auto const& lights { pScene->GetLights() };
+
+	if (camera.IsDirty())
+	{
+		ResetAccumulation();
+	}
+
+	++m_AccumulatedFrames;
 
 	float const aspectRatio{ m_Width / static_cast<float>(m_Height) };
 	float const fov{ tan(camera.fovAngle * TO_RADIANS/2) };
 
 	Matrix const cameraToWorld{ camera.CalculateCameraToWorld() };
-	
+
 	std::for_each(std::execution::par_unseq, m_Pixels.begin(), m_Pixels.end(), [&](int const idx)
 	{
-		ColorRGB finalColor{ };
+		ColorRGB frameColor{ };
 
 		int const px{ idx % m_Width };
 		int const py{ idx / m_Width };
 
 		for (uint32_t currSample{ 0 }; currSample < m_SampleCount; ++currSample)
 		{
-			//Offset from center of pixel depending on the current sample
 			auto const offset{ SampleRay(currSample) };
 
 			float const x{ ((2 * (px + .5f + offset.x) / static_cast<float>(m_Width) - 1) * aspectRatio * fov) };
@@ -66,19 +74,38 @@ void Renderer::Render(Scene* pScene) const
 			{
 				for (auto const& light : lights)
 				{
-					finalColor += CalculateIllumination(pScene, light, closestHit, viewRay.direction);
+					frameColor += CalculateIllumination(pScene, light, closestHit, viewRay.direction);
 				}
 			}
 		}
 
-		BoxFilter(finalColor);
-		finalColor.MaxToOne();
+		BoxFilter(frameColor);
+
+		//Accumulate across frames
+		m_AccumulationBuffer[idx] += frameColor;
+
+		//Display averaged result
+		ColorRGB displayColor{ m_AccumulationBuffer[idx] / static_cast<float>(m_AccumulatedFrames) };
+
+		switch (m_CurrToneMapMode)
+		{
+		case ToneMapMode::ReinhardJodie:
+			ReinhardJolieToneMap(displayColor);
+			break;
+		case ToneMapMode::ACES:
+			ACESAproxToneMap(displayColor);
+			break;
+		case ToneMapMode::None:
+		default:
+			displayColor.MaxToOne();
+			break;
+		}
 
 		m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
-			static_cast<uint8_t>(finalColor.r * 255),
-			static_cast<uint8_t>(finalColor.g * 255),
-			static_cast<uint8_t>(finalColor.b * 255));
-			
+			static_cast<uint8_t>(displayColor.r * 255),
+			static_cast<uint8_t>(displayColor.g * 255),
+			static_cast<uint8_t>(displayColor.b * 255));
+
 	});
 
 	//@END
@@ -247,4 +274,10 @@ Vector3 mau::Renderer::SampleUniformSquare(uint32_t currSample) const noexcept
 void mau::Renderer::BoxFilter(ColorRGB& c) const noexcept
 {
 	c /= m_SampleCount;
+}
+
+void mau::Renderer::ResetAccumulation() noexcept
+{
+	std::fill(m_AccumulationBuffer.begin(), m_AccumulationBuffer.end(), ColorRGB{});
+	m_AccumulatedFrames = 0;
 }

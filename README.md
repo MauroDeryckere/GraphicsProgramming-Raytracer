@@ -24,6 +24,7 @@ A CPU raytracer built with C++20, featuring physically-based rendering with Cook
 - Cook-Torrance BRDF (GGX distribution, Smith geometry, Fresnel-Schlick)
 - Lambert and Lambert-Phong shading models
 - Soft shadows with area lights (triangular)
+- Progressive rendering with per-frame accumulation
 - Anti-aliasing: random and uniform multi-sampling
 - Triangle mesh rendering with OBJ loading
 - Bounding Volume Hierarchy (BVH) acceleration
@@ -45,6 +46,7 @@ F3: Cycle light mode (observed area / radiance / BRDF / combined)<br>
 F4: Cycle sample mode (random / uniform)<br>
 F5: Decrease samples per pixel<br>
 F6: Increase samples per pixel<br>
+F7: Cycle tone mapping (none / Reinhard Jodie / ACES)<br>
 
 ## Building
 

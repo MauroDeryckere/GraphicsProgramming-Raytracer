@@ -107,6 +107,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 				{
 					pRenderer->IncreaseSamples();
 				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F7)
+				{
+					pRenderer->CycleToneMapMode();
+				}
 
 				break;
 			}
@@ -123,7 +127,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 		if (printTimer >= 1.f)
 		{
 			printTimer = 0.f;
-			std::cout << "dFPS: " << pTimer->GetdFPS() << std::endl;
+			std::cout << "dFPS: " << pTimer->GetdFPS() << " | Accumulated: " << pRenderer->GetAccumulatedFrames() << std::endl;
 		}
 
 		//Save screenshot after full render
@@ -146,6 +150,6 @@ void PrintInfo()
 {
 	std::cout << "Raytracer project Mauro Deryckere\n";
 	std::cout << "Keybinds: \n";
-	std::cout << "X: Screenshot\nF2: Shadows on/off\nF3: Cycle light mode\nF4: Cycle sample mode\nF5: Decrease samples\nF6: Increase samples\n\n";
+	std::cout << "X: Screenshot\nF2: Shadows on/off\nF3: Cycle light mode\nF4: Cycle sample mode\nF5: Decrease samples\nF6: Increase samples\nF7: Cycle tone mapping\n\n";
 	std::cout << "WASD: Move camera\nHold LMB and move: rotate camera\n\n";
 }
