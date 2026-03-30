@@ -323,7 +323,7 @@ namespace mau
 		inline bool HitTest_BVH(const Ray& ray, const TriangleMesh& mesh, const std::vector<BVHNode>& bvh, uint32_t nodeIdx, HitRecord& hitRecord, uint32_t& leafNodeIdx, bool ignoreHitRecord = false)
 		{
 			const BVHNode& node{ bvh[nodeIdx] };
-			if (!IntersectAABB(ray, node.aabbMin, node.aabbMax))
+			if (!IntersectAABB(ray, node.aabbMin, node.aabbMax, hitRecord.t))
 				return false;
 
 			if (node.IsLeaf())
@@ -332,10 +332,14 @@ namespace mau
 
 				for (uint32_t i{ 0 }; i < node.triangleCount; ++i)
 				{
-					Triangle t{ mesh.transformedPositions[mesh.indices[(node.leftFirst + i) * 3]],
-								mesh.transformedPositions[mesh.indices[((node.leftFirst + i) *3) + 1]],
-								mesh.transformedPositions[mesh.indices[((node.leftFirst + i) *3) + 2]],
-								mesh.transformedNormals[(node.leftFirst + i)]
+					auto const triIdx{ (node.leftFirst + i) };
+					auto const idx{ triIdx * 3 };
+
+					Triangle t{
+						mesh.transformedPositions[mesh.indices[idx]],
+						mesh.transformedPositions[mesh.indices[idx + 1]],
+						mesh.transformedPositions[mesh.indices[idx + 2]],
+						mesh.transformedNormals[triIdx]
 					};
 
 					t.cullMode = mesh.cullMode;
