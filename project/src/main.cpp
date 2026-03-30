@@ -152,8 +152,20 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 
 void PrintInfo()
 {
-	std::cout << "Raytracer project Mauro Deryckere\n";
-	std::cout << "Keybinds: \n";
-	std::cout << "X: Screenshot\nF2: Shadows on/off\nF3: Cycle light mode\nF4: Cycle sample mode\nF5: Decrease samples per frame\nF6: Increase samples per frame\nF7: Cycle tone mapping\nF8: Toggle progressive rendering\n\n";
-	std::cout << "WASD: Move camera\nHold LMB and move: rotate camera\n\n";
+	using namespace mau;
+
+	std::cout << YELLOW << "Settings & Keybinds: \n";
+
+	std::cout << "[X]: Screenshot\n";
+	std::cout << "[F2]: Toggle Shadows\n";
+	std::cout << "[F3]: Cycle Light Mode\n";
+	std::cout << "[F4]: Cycle Sample Mode\n";
+	std::cout << "[F5]: Decrease Samples Per Frame\n";
+	std::cout << "[F6]: Increase Samples Per Frame\n";
+	std::cout << "[F7]: Cycle Tone Mapping\n";
+	std::cout << "[F8]: Toggle Progressive Rendering\n\n";
+
+	std::cout << "[WASD]: Move Camera\n";
+	std::cout << "[LMB + Drag]: Rotate Camera\n\n";
+	std::cout << RESET;
 }

@@ -12,6 +12,12 @@ struct SDL_Surface;
 
 namespace mau
 {
+	// Console colors
+	inline constexpr char const* RESET  = "\033[0m";
+	inline constexpr char const* RED    = "\033[31m";
+	inline constexpr char const* GREEN  = "\033[32m";
+	inline constexpr char const* YELLOW = "\033[33m";
+
 	class Vector3;
 	class Scene;
 	struct Light;
@@ -40,9 +46,26 @@ namespace mau
 
 			m_CurrLightMode = static_cast<LightMode>(curr);
 			ResetAccumulation();
+
+			std::cout << "Light mode -> " << GREEN;
+			switch (m_CurrLightMode)
+			{
+			case LightMode::ObservedArea: std::cout << "ObservedArea\n"; break;
+			case LightMode::Radiance:     std::cout << "Radiance\n"; break;
+			case LightMode::BRDF:         std::cout << "BRDF\n"; break;
+			case LightMode::Combined:     std::cout << "Combined\n"; break;
+			default: break;
+			}
+			std::cout << RESET;
 		}
 
-		void ToggleShadows() noexcept { m_ShadowsEnabled = !m_ShadowsEnabled; ResetAccumulation(); }
+		void ToggleShadows() noexcept
+		{
+			m_ShadowsEnabled = !m_ShadowsEnabled;
+			ResetAccumulation();
+			std::cout << "Shadows -> " << (m_ShadowsEnabled ? GREEN : RED) << (m_ShadowsEnabled ? "Enabled" : "Disabled") << "\n";
+			std::cout << RESET;
+		}
 
 		void CycleSampleMode() noexcept
 		{
@@ -51,6 +74,15 @@ namespace mau
 
 			m_CurrSampleMode = static_cast<SampleMode>(curr);
 			ResetAccumulation();
+
+			std::cout << "Sample mode -> " << GREEN;
+			switch (m_CurrSampleMode)
+			{
+			case SampleMode::RandomSquare:  std::cout << "Random\n"; break;
+			case SampleMode::UniformSquare: std::cout << "Uniform\n"; break;
+			default: break;
+			}
+			std::cout << RESET;
 		}
 
 		void CycleToneMapMode() noexcept
@@ -60,21 +92,40 @@ namespace mau
 
 			m_CurrToneMapMode = static_cast<ToneMapMode>(curr);
 			ResetAccumulation();
+
+			std::cout << "Tone mapping -> " << GREEN;
+			switch (m_CurrToneMapMode)
+			{
+			case ToneMapMode::None:          std::cout << "None\n"; break;
+			case ToneMapMode::ReinhardJodie: std::cout << "Reinhard Jodie\n"; break;
+			case ToneMapMode::ACES:          std::cout << "ACES\n"; break;
+			default: break;
+			}
+			std::cout << RESET;
 		}
 
-		void ToggleProgressive() noexcept { m_ProgressiveEnabled = !m_ProgressiveEnabled; ResetAccumulation(); }
+		void ToggleProgressive() noexcept
+		{
+			m_ProgressiveEnabled = !m_ProgressiveEnabled;
+			m_SampleCount = 1;
+			ResetAccumulation();
+			std::cout << "Progressive rendering -> " << (m_ProgressiveEnabled ? GREEN : RED) << (m_ProgressiveEnabled ? "Enabled" : "Disabled") << "\n";
+			std::cout << RESET;
+		}
 
 		void IncreaseSamples() noexcept
 		{
 			m_SampleCount *= 2;
 			ResetAccumulation();
-			std::cout << "Samples per " << (m_ProgressiveEnabled ? "frame" : "pixel") << ": " << m_SampleCount << '\n';
+			std::cout << "Samples per " << (m_ProgressiveEnabled ? "frame (accumulating)" : "pixel") << " -> " << GREEN << m_SampleCount << "\n";
+			std::cout << RESET;
 		}
 		void DecreaseSamples() noexcept
 		{
 			m_SampleCount = std::max<uint32_t>(m_SampleCount / 2, 1);
 			ResetAccumulation();
-			std::cout << "Samples per " << (m_ProgressiveEnabled ? "frame" : "pixel") << ": " << m_SampleCount << '\n';
+			std::cout << "Samples per " << (m_ProgressiveEnabled ? "frame (accumulating)" : "pixel") << " -> " << GREEN << m_SampleCount << "\n";
+			std::cout << RESET;
 		}
 
 	private:
