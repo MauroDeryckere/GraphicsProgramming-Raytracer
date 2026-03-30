@@ -27,6 +27,8 @@ namespace mau
 		float movementSpeed{ 3.f };
 		float rotationSpeed{ 10.f };
 
+		[[nodiscard]] bool IsDirty() const noexcept { return m_IsDirty; }
+
 		Camera() = default;
 
 		Camera(Vector3 const&  _origin, float _fovAngle) :
@@ -47,6 +49,7 @@ namespace mau
 
 		void Update(Timer* pTimer)
 		{
+			m_IsDirty = false;
 			float const deltaTime{ pTimer->GetElapsed() };
 
 			Vector3 movementDir{ };
@@ -75,6 +78,7 @@ namespace mau
 			{
 				movementDir.Normalize();
 				origin += (movementDir * movementSpeed * deltaTime);
+				m_IsDirty = true;
 			}
 
 			//Mouse Input
@@ -85,10 +89,13 @@ namespace mau
 			if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
 				UpdateCameraDirection(static_cast<float>(mouseX), static_cast<float>(mouseY), deltaTime);
+				m_IsDirty = true;
 			}
 		}
 
 	private:
+		bool m_IsDirty{ false };
+
 		void UpdateCameraDirection(float deltaX, float deltaY, float deltaTime)
 		{
 			if (deltaX == 0.f && deltaY == 0.f)
