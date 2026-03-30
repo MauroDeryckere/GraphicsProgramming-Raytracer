@@ -100,8 +100,6 @@ ColorRGB mau::Renderer::CalculateIllumination(Scene* pScene, const Light& light,
 
 	ColorRGB shade{ };
 
-	auto const& materials{ pScene->GetMaterials() };
-
 	bool const hasNoSoftShadows{ !light.HasSoftShadows() };
 	if (hasNoSoftShadows)
 	{
@@ -118,7 +116,7 @@ ColorRGB mau::Renderer::CalculateIllumination(Scene* pScene, const Light& light,
 
 			observedArea = o;
 			radiance = GetRadiance(light, light.origin, closestHit);
-			shade = materials[closestHit.materialIndex]->Shade(closestHit, dirToLight.first, -viewDir);
+			shade = pScene->GetMaterial(closestHit.materialIndex)->Shade(closestHit, dirToLight.first, -viewDir);
 		}
 	}
 	else
@@ -151,7 +149,7 @@ ColorRGB mau::Renderer::CalculateIllumination(Scene* pScene, const Light& light,
 				{
 					observedArea += o;
 					radiance += GetRadiance(light, pointOnTriangle, closestHit);
-					shade += materials[closestHit.materialIndex]->Shade(closestHit, dirToLight.first, -viewDir);
+					shade += pScene->GetMaterial(closestHit.materialIndex)->Shade(closestHit, dirToLight.first, -viewDir);
 				}
 
 				break;

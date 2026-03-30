@@ -14,7 +14,7 @@ namespace mau
 		Vector3 origin{};
 		float radius{};
 
-		unsigned char materialIndex{ 0 };
+		uint8_t materialIndex{ 0 };
 	};
 
 	struct Plane
@@ -22,7 +22,7 @@ namespace mau
 		Vector3 origin{};
 		Vector3 normal{};
 
-		unsigned char materialIndex{ 0 };
+		uint8_t materialIndex{ 0 };
 	};
 
 	enum class TriangleCullMode : uint8_t

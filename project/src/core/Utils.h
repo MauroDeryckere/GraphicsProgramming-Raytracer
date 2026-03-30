@@ -442,8 +442,8 @@ namespace mau
 					float i0, i1, i2;
 					file >> i0 >> i1 >> i2;
 
-					indices.push_back((int)i0 - 1);
-					indices.push_back((int)i1 - 1);
+					indices.push_back(static_cast<int>(i0) - 1);
+					indices.push_back(static_cast<int>(i1) - 1);
 					indices.push_back((int)i2 - 1);
 				}
 				//read till end of line and ignore all remaining chars

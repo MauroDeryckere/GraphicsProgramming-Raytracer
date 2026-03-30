@@ -10,25 +10,14 @@
 
 namespace mau
 {
-	//Initialize Scene with Default Solid Color Material (RED)
-	Scene::Scene() :
-		m_Materials({ new Material_SolidColor({1,0,0}) })
+	Scene::Scene()
 	{
+		m_Materials.emplace_back(std::make_unique<Material_SolidColor>(ColorRGB{ 1, 0, 0 }));
+
 		m_SphereGeometries.reserve(32);
 		m_PlaneGeometries.reserve(32);
 		m_TriangleMeshGeometries.reserve(32);
 		m_Lights.reserve(32);
-	}
-
-	Scene::~Scene()
-	{
-		for (auto& pMaterial : m_Materials)
-		{
-			delete pMaterial;
-			pMaterial = nullptr;
-		}
-
-		m_Materials.clear();
 	}
 
 	void mau::Scene::GetClosestHit(const Ray& ray, HitRecord& closestHit) const
@@ -139,7 +128,7 @@ namespace mau
 		return false;
 	}
 
-	Sphere* Scene::AddSphere(const Vector3& origin, float radius, unsigned char materialIndex)
+	Sphere* Scene::AddSphere(const Vector3& origin, float radius, uint8_t materialIndex)
 	{
 		Sphere s;
 		s.origin = origin;
@@ -150,7 +139,7 @@ namespace mau
 		return &m_SphereGeometries.back();
 	}
 
-	Plane* Scene::AddPlane(const Vector3& origin, const Vector3& normal, unsigned char materialIndex)
+	Plane* Scene::AddPlane(const Vector3& origin, const Vector3& normal, uint8_t materialIndex)
 	{
 		Plane p;
 		p.origin = origin;
@@ -161,7 +150,7 @@ namespace mau
 		return &m_PlaneGeometries.back();
 	}
 
-	TriangleMesh* Scene::AddTriangleMesh(TriangleCullMode cullMode, unsigned char materialIndex)
+	TriangleMesh* Scene::AddTriangleMesh(TriangleCullMode cullMode, uint8_t materialIndex)
 	{
 		TriangleMesh m{};
 		m.cullMode = cullMode;
@@ -230,21 +219,21 @@ namespace mau
 		return &m_Lights.back();
 	}
 
-	unsigned char Scene::AddMaterial(Material* pMaterial)
+	uint8_t Scene::AddMaterial(std::unique_ptr<Material> pMaterial)
 	{
-		m_Materials.push_back(pMaterial);
-		return static_cast<unsigned char>(m_Materials.size() - 1);
+		m_Materials.emplace_back(std::move(pMaterial));
+		return static_cast<uint8_t>(m_Materials.size() - 1);
 	}
 
 	void Scene_BasicGeometry::Initialize()
 	{
 		//default: Material id0 >> SolidColor Material (RED)
-		unsigned char constexpr matId_Solid_Red{ 0 };
-		unsigned char const matId_Solid_Blue{ AddMaterial(new Material_SolidColor{ colors::Blue }) };
+		uint8_t constexpr matId_Solid_Red{ 0 };
+		uint8_t const matId_Solid_Blue{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Blue)) };
 
-		unsigned char const matId_Solid_Yellow{ AddMaterial(new Material_SolidColor{ colors::Yellow }) };
-		unsigned char const matId_Solid_Green { AddMaterial(new Material_SolidColor{ colors::Green }) };
-		unsigned char const matId_Solid_Magenta{ AddMaterial(new Material_SolidColor{ colors::Magenta }) };
+		uint8_t const matId_Solid_Yellow{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Yellow)) };
+		uint8_t const matId_Solid_Green { AddMaterial(std::make_unique<Material_SolidColor>(colors::Green)) };
+		uint8_t const matId_Solid_Magenta{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Magenta)) };
 
 		//Spheres
 		AddSphere({ -25.f, 0.f, 100.f }, 50.f, matId_Solid_Red);
@@ -264,12 +253,12 @@ namespace mau
 		m_Camera.fovAngle = 45.f;
 
 		//default: Material id0 >> SolidColor Material (RED)
-		unsigned char constexpr matId_Solid_Red{ 0 };
-		unsigned char const matId_Solid_Blue{ AddMaterial(new Material_SolidColor{ colors::Blue }) };
+		uint8_t constexpr matId_Solid_Red{ 0 };
+		uint8_t const matId_Solid_Blue{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Blue)) };
 
-		unsigned char const matId_Solid_Yellow{ AddMaterial(new Material_SolidColor{ colors::Yellow }) };
-		unsigned char const matId_Solid_Green{ AddMaterial(new Material_SolidColor{ colors::Green }) };
-		unsigned char const matId_Solid_Magenta{ AddMaterial(new Material_SolidColor{ colors::Magenta }) };
+		uint8_t const matId_Solid_Yellow{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Yellow)) };
+		uint8_t const matId_Solid_Green{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Green)) };
+		uint8_t const matId_Solid_Magenta{ AddMaterial(std::make_unique<Material_SolidColor>(colors::Magenta)) };
 
 		//Planes
 		AddPlane({ -5.f, 0.f, 0.f }, { 1.f, 0.f,0.f }, matId_Solid_Green);
@@ -295,14 +284,14 @@ namespace mau
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matCT_GrayRoughMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, 1.f }) };
-		auto const matCT_GrayMediumMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, .6f }) };
-		auto const matCT_GraySmoothMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, .1f }) };
-		auto const matCT_GrayRoughPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, 1.f }) };
-		auto const matCT_GrayMediumPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, .6f }) };
-		auto const matCT_GraySmoothPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, .1f }) };
+		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, 1.f)) };
+		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .6f)) };
+		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .1f)) };
+		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, 1.f)) };
+		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .6f)) };
+		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .1f)) };
 
-		auto const matLambertGrayBlue{ AddMaterial(new Material_Lambert{{.49f, .57f, .57f}, 1.f}) };
+		auto const matLambertGrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f}, 1.f)) };
 
 		//Planes
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f,-1.f }, matLambertGrayBlue);
@@ -330,9 +319,9 @@ namespace mau
 		m_Camera.origin = { 0.f, 1.f, -5.f };
 		m_Camera.fovAngle = 45.f;
 
-		unsigned char const matId_Red{ AddMaterial(new Material_Lambert{ colors::Red, 1.f }) };
-		unsigned char const matId_Blue{ AddMaterial(new Material_LambertPhong{ colors::Blue, 1.f, 1.f, 60.f }) };
-		unsigned char const matId_Yellow{ AddMaterial(new Material_Lambert{ colors::Yellow, 1.f }) };
+		uint8_t const matId_Red{ AddMaterial(std::make_unique<Material_Lambert>(colors::Red, 1.f)) };
+		uint8_t const matId_Blue{ AddMaterial(std::make_unique<Material_LambertPhong>(colors::Blue, 1.f, 1.f, 60.f)) };
+		uint8_t const matId_Yellow{ AddMaterial(std::make_unique<Material_Lambert>(colors::Yellow, 1.f)) };
 
 		//Spheres
 		AddSphere({ -.75f, 1.f, 0.f }, 1.f, matId_Red);
@@ -349,8 +338,8 @@ namespace mau
 		m_Camera.origin = { 0.f, 1.f, -5.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matLambert_GrayBlue{ AddMaterial(new Material_Lambert{ {.49f, .57f, .57f }, 1.f}) };
-		auto const matLambert_White{ AddMaterial(new Material_Lambert{ colors::White, 1.f}) };
+		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
+		auto const matLambert_White{ AddMaterial(std::make_unique<Material_Lambert>(colors::White, 1.f)) };
 
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f, -1.f }, matLambert_GrayBlue);
 		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matLambert_GrayBlue);
@@ -375,8 +364,8 @@ namespace mau
 		m_Camera.origin = { 0.f, 1.f, -5.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matLambert_GrayBlue{ AddMaterial(new Material_Lambert{ {.49f, .57f, .57f }, 1.f}) };
-		auto const matLambert_White{ AddMaterial(new Material_Lambert{ colors::White, 1.f}) };
+		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
+		auto const matLambert_White{ AddMaterial(std::make_unique<Material_Lambert>(colors::White, 1.f)) };
 
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f, -1.f }, matLambert_GrayBlue);
 		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matLambert_GrayBlue);
@@ -412,15 +401,15 @@ namespace mau
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matCT_GrayRoughMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, 1.f }) };
-		auto const matCT_GrayMediumMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, .6f }) };
-		auto const matCT_GraySmoothMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, .1f }) };
-		auto const matCT_GrayRoughPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, 1.f }) };
-		auto const matCT_GrayMediumPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, .6f }) };
-		auto const matCT_GraySmoothPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, .1f }) };
+		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, 1.f)) };
+		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .6f)) };
+		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .1f)) };
+		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, 1.f)) };
+		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .6f)) };
+		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .1f)) };
 
-		auto const matLambert_GrayBlue{ AddMaterial(new Material_Lambert{ {.49f, .57f, .57f }, 1.f}) };
-		auto const matLambert_White{ AddMaterial(new Material_Lambert{ colors::White, 1.f}) };
+		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
+		auto const matLambert_White{ AddMaterial(std::make_unique<Material_Lambert>(colors::White, 1.f)) };
 
 		//Planes
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f, -1.f }, matLambert_GrayBlue);
@@ -480,8 +469,8 @@ namespace mau
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matLambert_GrayBlue{ AddMaterial(new Material_Lambert{ {.49f, .57f, .57f }, 1.f}) };
-		auto const matLambert_White{ AddMaterial(new Material_Lambert{ colors::White, 1.f}) };
+		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
+		auto const matLambert_White{ AddMaterial(std::make_unique<Material_Lambert>(colors::White, 1.f)) };
 
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f, -1.f }, matLambert_GrayBlue);
 		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matLambert_GrayBlue);
@@ -530,14 +519,14 @@ namespace mau
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 
-		auto const matCT_GrayRoughMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, 1.f }) };
-		auto const matCT_GrayMediumMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, .6f }) };
-		auto const matCT_GraySmoothMetal{ AddMaterial(new Material_CookTorrence{ {.972f, .960f, .915f}, 1.f, .1f }) };
-		auto const matCT_GrayRoughPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, 1.f }) };
-		auto const matCT_GrayMediumPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, .6f }) };
-		auto const matCT_GraySmoothPlastic{ AddMaterial(new Material_CookTorrence{ {.75f, .75f, .75f}, 0.f, .1f }) };
+		auto const matCT_GrayRoughMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, 1.f)) };
+		auto const matCT_GrayMediumMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .6f)) };
+		auto const matCT_GraySmoothMetal{ AddMaterial(std::make_unique<Material_CookTorrence>({.972f, .960f, .915f}, 1.f, .1f)) };
+		auto const matCT_GrayRoughPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, 1.f)) };
+		auto const matCT_GrayMediumPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .6f)) };
+		auto const matCT_GraySmoothPlastic{ AddMaterial(std::make_unique<Material_CookTorrence>({.75f, .75f, .75f}, 0.f, .1f)) };
 
-		auto const matLambert_GrayBlue{ AddMaterial(new Material_Lambert{ {.49f, .57f, .57f }, 1.f}) };
+		auto const matLambert_GrayBlue{ AddMaterial(std::make_unique<Material_Lambert>(ColorRGB{.49f, .57f, .57f }, 1.f)) };
 
 		//Planes
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f, -1.f }, matLambert_GrayBlue);

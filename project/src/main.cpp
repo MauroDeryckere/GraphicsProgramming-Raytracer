@@ -8,6 +8,7 @@
 
 //Standard includes
 #include <iostream>
+#include <memory>
 
 //Project includes
 #include "Timer.h"
@@ -46,21 +47,21 @@ int main(int argc, char* args[])
 		return 1;
 
 	//Initialize "framework"
-	const auto pTimer = new Timer();
-	const auto pRenderer = new Renderer(pWindow);
+	auto const pTimer = std::make_unique<Timer>();
+	auto const pRenderer = std::make_unique<Renderer>(pWindow);
 
-	//auto const pScene { new Scene_BasicGeometry() };
-	//auto const pScene{ new Scene_PointLights() };
-	//auto const pScene{ new Scene_CookTorrence() };
-	//auto const pScene{ new Scene_LambertPhong() };
+	//auto const pScene = std::make_unique<Scene_BasicGeometry>();
+	//auto const pScene = std::make_unique<Scene_PointLights>();
+	//auto const pScene = std::make_unique<Scene_CookTorrence>();
+	//auto const pScene = std::make_unique<Scene_LambertPhong>();
 
-	//auto const pScene{ new Scene_Triangle{} };
-	//auto const pScene{ new Scene_MeshTest{} };
+	//auto const pScene = std::make_unique<Scene_Triangle>();
+	//auto const pScene = std::make_unique<Scene_MeshTest>();
 
-	auto const pScene{ new Scene_Reference{} };
-	//auto const pScene{ new Scene_Bunny{} };
+	auto const pScene = std::make_unique<Scene_Reference>();
+	//auto const pScene = std::make_unique<Scene_Bunny>();
 
-	//auto const pScene{ new Scene_SoftShadows{} };
+	//auto const pScene = std::make_unique<Scene_SoftShadows>();
 
 	PrintInfo();
 
@@ -115,9 +116,9 @@ int main(int argc, char* args[])
 		}
 
 		//--------- Update ---------
-		pScene->Update(pTimer);
+		pScene->Update(pTimer.get());
 		//--------- Render ---------
-		pRenderer->Render(pScene);
+		pRenderer->Render(pScene.get());
 
 		//--------- Timer ---------
 		pTimer->Update();
@@ -139,11 +140,6 @@ int main(int argc, char* args[])
 		}
 	}
 	pTimer->Stop();
-
-	//Shutdown "framework"
-	delete pScene;
-	delete pRenderer;
-	delete pTimer;
 
 	ShutDown(pWindow);
 	return 0;

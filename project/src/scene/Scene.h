@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "Maths.h"
 #include "DataTypes.h"
@@ -22,7 +23,7 @@ namespace mau
 	{
 	public:
 		Scene();
-		virtual ~Scene();
+		virtual ~Scene() = default;
 
 		Scene(const Scene&) = delete;
 		Scene(Scene&&) noexcept = delete;
@@ -42,7 +43,7 @@ namespace mau
 		std::vector<Plane> const& GetPlaneGeometries() const { return m_PlaneGeometries; }
 		std::vector<Sphere>const& GetSphereGeometries() const { return m_SphereGeometries; }
 		std::vector<Light> const& GetLights() const { return m_Lights; }
-		std::vector<Material*> const& GetMaterials() const { return m_Materials; }
+		[[nodiscard]] Material* GetMaterial(uint8_t index) const { return m_Materials[index].get(); }
 
 	protected:
 		std::string m_SceneName;
@@ -51,18 +52,18 @@ namespace mau
 		std::vector<Sphere> m_SphereGeometries{};
 		std::vector<TriangleMesh> m_TriangleMeshGeometries{};
 		std::vector<Light> m_Lights{};
-		std::vector<Material*> m_Materials{};
+		std::vector<std::unique_ptr<Material>> m_Materials{};
 
 		Camera m_Camera{};
 
-		Sphere* AddSphere(Vector3 const& origin, float radius, unsigned char materialIndex = 0);
-		Plane* AddPlane(Vector3 const& origin, Vector3 const& normal, unsigned char materialIndex = 0);
-		TriangleMesh* AddTriangleMesh(TriangleCullMode cullMode, unsigned char materialIndex = 0);
+		Sphere* AddSphere(Vector3 const& origin, float radius, uint8_t materialIndex = 0);
+		Plane* AddPlane(Vector3 const& origin, Vector3 const& normal, uint8_t materialIndex = 0);
+		TriangleMesh* AddTriangleMesh(TriangleCullMode cullMode, uint8_t materialIndex = 0);
 
 		Light* AddPointLight(Vector3 const& origin, float intensity, ColorRGB const& color);
 		Light* AddAreaLight(Vector3 const& origin, float intensity, ColorRGB const& color, LightShape shape = LightShape::None, float radius = 0.f, std::vector<Vector3> const& vertices = {});
 		Light* AddDirectionalLight(Vector3 const& direction, float intensity, ColorRGB const& color);
-		unsigned char AddMaterial(Material* pMaterial);
+		uint8_t AddMaterial(std::unique_ptr<Material> pMaterial);
 	};
 
 	class Scene_BasicGeometry final : public Scene
