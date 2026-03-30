@@ -1,11 +1,10 @@
 #include <gtest/gtest.h>
-#include "../src/Vector3.h"
-#include "../src/Vector4.h"
-#include "../src/Matrix.h"
+#include "Vector3.h"
+#include "Vector4.h"
+#include "Matrix.h"
 
 namespace mau
 {
-	// W1
 	TEST(Vector3, DotProduct) {
 		EXPECT_EQ(1.0f, Vector3::Dot(Vector3::UnitX, Vector3::UnitX)); // (1) Same direction
 		EXPECT_EQ(-1.0f, Vector3::Dot(Vector3::UnitX, -Vector3::UnitX)); // (-1) Opposite direction
@@ -16,7 +15,6 @@ namespace mau
 		EXPECT_EQ(32.0f, mau::Vector3::Dot(v1, v2));
 	}
 
-	// W1
 	TEST(Vector4, DotProduct) {
 		EXPECT_EQ(70.f, Vector4::Dot({ 1, 2, 3, 4 }, { 5, 6, 7, 8 }));
 		EXPECT_EQ(30.f, Vector4::Dot({ 1, 2, 3, 4 }, { 1, 2, 3, 4 }));
@@ -25,7 +23,6 @@ namespace mau
 		EXPECT_EQ(0.f, Vector4::Dot({ 0, 1, 0, 0 }, { 0, 0, 1, 0 }));
 	}
 
-	// W1
 	TEST(Vector3, CrossProduct) {
 		EXPECT_EQ(Vector3::UnitY, Vector3::Cross(Vector3::UnitZ, Vector3::UnitX)); // (0,1,0) UnitY
 		EXPECT_EQ(-Vector3::UnitY, Vector3::Cross(Vector3::UnitX, Vector3::UnitZ)); // (0,-1,0) -UnitY
@@ -35,7 +32,6 @@ namespace mau
 		EXPECT_EQ(mau::Vector3(-3.0f, 6.0f, -3.0f), mau::Vector3::Cross(v1, v2));
 	}
 
-	// W1
 
 	int main(int argc, char** argv) {
 		::testing::InitGoogleTest(&argc, argv);

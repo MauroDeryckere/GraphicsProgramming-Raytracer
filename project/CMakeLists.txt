@@ -1,80 +1,70 @@
 # Source files
-set(SOURCES 
-    "src/main.cpp"
-    "src/Matrix.cpp"
-    "src/Renderer.cpp"
-    "src/Scene.cpp"
-    "src/Timer.cpp"
-    "src/Vector3.cpp"
-    "src/Vector4.cpp"
+set(SOURCES
+    src/main.cpp
+    src/core/Matrix.cpp
+    src/core/Timer.cpp
+    src/core/Vector3.cpp
+    src/core/Vector4.cpp
+    src/rendering/Renderer.cpp
+    src/scene/Scene.cpp
 )
 
-# Create the executable
-add_executable(${PROJECT_NAME} ${SOURCES} "src/Light.h" "src/BVH.h")
+add_executable(${PROJECT_NAME} ${SOURCES})
 
-# only needed if header files are not in same directory as source files
-# target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-
-# Copy resources to output folder
-set(RESOURCES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
-file(GLOB_RECURSE RESOURCE_FILES
-    "${RESOURCES_SOURCE_DIR}/*.jpg"
-    "${RESOURCES_SOURCE_DIR}/*.png"
-    "${RESOURCES_SOURCE_DIR}/*.obj"
+# Include directories
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/scene
 )
-set(RESOURCES_OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/resources/")
-file(MAKE_DIRECTORY ${RESOURCES_OUT_DIR})
-foreach(RESOURCE ${RESOURCE_FILES})
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${RESOURCE}
-    ${RESOURCES_OUT_DIR})
-endforeach(RESOURCE)
 
+# --- Helper: copy files to output directory ---
+function(copy_files_post_build TARGET_NAME SOURCE_DIR PATTERNS)
+    foreach(PATTERN ${PATTERNS})
+        file(GLOB_RECURSE FILES "${SOURCE_DIR}/${PATTERN}")
+        foreach(FILE ${FILES})
+            add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FILE}
+                $<TARGET_FILE_DIR:${TARGET_NAME}>)
+        endforeach()
+    endforeach()
+endfunction()
 
-# Simple Directmedia Layer
+function(copy_to_resources TARGET_NAME SOURCE_DIR PATTERNS)
+    set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/resources")
+    file(MAKE_DIRECTORY ${OUT_DIR})
+    foreach(PATTERN ${PATTERNS})
+        file(GLOB_RECURSE FILES "${SOURCE_DIR}/${PATTERN}")
+        foreach(FILE ${FILES})
+            add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FILE} ${OUT_DIR})
+        endforeach()
+    endforeach()
+endfunction()
+
+# Copy assets to output resources/ folder
+copy_to_resources(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/assets" "*.jpg;*.png;*.obj")
+
+# SDL2
 set(SDL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL2-2.30.3")
-add_library(SDL STATIC IMPORTED)
-set_target_properties(SDL PROPERTIES
+add_library(SDL2 STATIC IMPORTED)
+set_target_properties(SDL2 PROPERTIES
     IMPORTED_LOCATION "${SDL_DIR}/lib/SDL2.lib"
     INTERFACE_INCLUDE_DIRECTORIES "${SDL_DIR}/include"
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2)
+copy_files_post_build(${PROJECT_NAME} "${SDL_DIR}/lib" "*.dll;*.manifest")
 
-file(GLOB_RECURSE DLL_FILES
-    "${SDL_DIR}/lib/*.dll"
-    "${SDL_DIR}/lib/*.manifest"
-)
-
-foreach(DLL ${DLL_FILES})
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${DLL}
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-endforeach(DLL)
-
-
-# Visual Leak Detector
-if(WIN32 AND CMAKE_BUILD_TYPE MATCHES Debug)
-    add_compile_definitions(ENABLE_VLD=1)
+# Visual Leak Detector (Debug only)
+if(WIN32)
     set(VLD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/vld")
-    add_library(vld STATIC IMPORTED)
-    set_target_properties(vld PROPERTIES
+    add_library(VLD STATIC IMPORTED)
+    set_target_properties(VLD PROPERTIES
         IMPORTED_LOCATION "${VLD_DIR}/lib/vld.lib"
         INTERFACE_INCLUDE_DIRECTORIES "${VLD_DIR}/include"
     )
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE vld)
-
-    set(DLL_SOURCE_DIR "${VLD_DIR}/lib")
-
-    file(GLOB_RECURSE DLL_FILES
-        "${DLL_SOURCE_DIR}/*.dll"
-        "${DLL_SOURCE_DIR}/*.manifest"
-    )
-
-    foreach(DLL ${DLL_FILES})
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy ${DLL}
-            $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-    endforeach(DLL)
+    target_link_libraries(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:VLD>)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:ENABLE_VLD=1>)
+    copy_files_post_build(${PROJECT_NAME} "${VLD_DIR}/lib" "*.dll;*.manifest")
 endif()
