@@ -105,6 +105,16 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 					pRenderer->ToggleProgressive();
 				}
 
+				if (e.key.keysym.scancode == SDL_SCANCODE_F9)
+				{
+					sceneManager.GetActiveScene()->ToggleBVH();
+					pRenderer->ResetAccumulation();
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F10)
+				{
+					pRenderer->CycleBVHDebug();
+				}
+
 				//Scene selection (1-9)
 				if (e.key.keysym.scancode >= SDL_SCANCODE_1 && e.key.keysym.scancode <= SDL_SCANCODE_9)
 				{
@@ -162,7 +172,9 @@ void PrintInfo()
 	std::cout << "[F5]: Decrease Samples Per Frame\n";
 	std::cout << "[F6]: Increase Samples Per Frame\n";
 	std::cout << "[F7]: Cycle Tone Mapping\n";
-	std::cout << "[F8]: Toggle Progressive Rendering\n\n";
+	std::cout << "[F8]: Toggle Progressive Rendering\n";
+	std::cout << "[F9]: Toggle BVH Acceleration\n";
+	std::cout << "[F10]: Cycle BVH Debug (off / leaf colors / AABB wireframe)\n\n";
 
 	std::cout << "[1]: Cook-Torrance\n";
 	std::cout << "[2]: Lambert-Phong\n";

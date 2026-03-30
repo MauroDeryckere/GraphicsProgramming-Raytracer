@@ -12,12 +12,6 @@ struct SDL_Surface;
 
 namespace mau
 {
-	// Console colors
-	inline constexpr char const* RESET  = "\033[0m";
-	inline constexpr char const* RED    = "\033[31m";
-	inline constexpr char const* GREEN  = "\033[32m";
-	inline constexpr char const* YELLOW = "\033[33m";
-
 	class Vector3;
 	class Scene;
 	struct Light;
@@ -105,6 +99,24 @@ namespace mau
 			std::cout << RESET;
 		}
 
+		void CycleBVHDebug() noexcept
+		{
+			auto curr{ static_cast<uint8_t>(m_CurrBVHDebugMode) };
+			++curr %= static_cast<uint8_t>(BVHDebugMode::COUNT);
+			m_CurrBVHDebugMode = static_cast<BVHDebugMode>(curr);
+			ResetAccumulation();
+
+			std::cout << "BVH debug -> " << GREEN;
+			switch (m_CurrBVHDebugMode)
+			{
+			case BVHDebugMode::Off:       std::cout << "Off\n"; break;
+			case BVHDebugMode::LeafColor:  std::cout << "Leaf Colors\n"; break;
+			case BVHDebugMode::Wireframe:  std::cout << "AABB Wireframe\n"; break;
+			default: break;
+			}
+			std::cout << RESET;
+		}
+
 		void ToggleProgressive() noexcept
 		{
 			m_ProgressiveEnabled = !m_ProgressiveEnabled;
@@ -170,6 +182,15 @@ namespace mau
 			COUNT
 		};
 		ToneMapMode m_CurrToneMapMode{ ToneMapMode::None }; //Cycle through with F7
+
+		enum class BVHDebugMode : uint8_t
+		{
+			Off,
+			LeafColor,
+			Wireframe,
+			COUNT
+		};
+		BVHDebugMode m_CurrBVHDebugMode{ BVHDebugMode::Off };
 
 		bool m_ProgressiveEnabled{ true };
 		std::vector<ColorRGB> m_AccumulationBuffer{};

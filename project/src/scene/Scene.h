@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <memory>
@@ -38,14 +39,22 @@ namespace mau
 
 		Camera& GetCamera() noexcept { return m_Camera; }
 		const Camera& GetCamera() const noexcept { return m_Camera; }
-		void GetClosestHit(const Ray& ray, HitRecord& closestHit) const;
+		void GetClosestHit(const Ray& ray, HitRecord& closestHit, uint32_t& bvhLeafNodeIdx) const;
 		[[nodiscard]] bool DoesHit(const Ray& ray) const;
 
 		[[nodiscard]] bool IsDirty() const noexcept { return m_IsDirty; }
 
+		void ToggleBVH() noexcept
+		{
+			m_UseBVH = !m_UseBVH;
+			std::cout << "BVH -> " << (m_UseBVH ? GREEN : RED) << (m_UseBVH ? "Enabled" : "Disabled") << "\n";
+			std::cout << RESET;
+		}
+
 		std::vector<Plane> const& GetPlaneGeometries() const { return m_PlaneGeometries; }
 		std::vector<Sphere>const& GetSphereGeometries() const { return m_SphereGeometries; }
 		std::vector<Light> const& GetLights() const { return m_Lights; }
+		std::vector<TriangleMesh> const& GetTriangleMeshGeometries() const { return m_TriangleMeshGeometries; }
 		[[nodiscard]] Material* GetMaterial(uint8_t index) const { return m_Materials[index].get(); }
 
 	protected:
@@ -59,6 +68,7 @@ namespace mau
 
 		Camera m_Camera{};
 		bool m_IsDirty{ false };
+		bool m_UseBVH{ true };
 
 		Sphere* AddSphere(Vector3 const& origin, float radius, uint8_t materialIndex = 0);
 		Plane* AddPlane(Vector3 const& origin, Vector3 const& normal, uint8_t materialIndex = 0);

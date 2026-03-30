@@ -241,10 +241,10 @@ namespace mau
 
 		void InitializeBVH()
 		{
-			bvh.emplace_back(BVHNode{  });
-			bvh.reserve(1000); //temporarily just reserve 16 child nodes (and 1 root node)
+			bvh.clear();
+			bvh.emplace_back(BVHNode{});
 
-			bvh[0].BuildBVH(bvh, indices, positions, normals, transformedNormals);
+			bvh[0].BuildBVH(bvh, indices, transformedPositions, normals, transformedNormals);
 		}
 	};
 #pragma endregion

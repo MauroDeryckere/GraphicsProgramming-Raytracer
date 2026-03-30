@@ -70,14 +70,67 @@ void Renderer::Render(Scene* pScene)
 
 			Ray const viewRay{ cameraToWorld.GetTranslation() , dirWorldSpace };
 
-			HitRecord closestHit{ };
-			pScene->GetClosestHit(viewRay, closestHit);
+			uint32_t bvhLeafNodeIdx{ std::numeric_limits<uint32_t>::max() };
+			HitRecord closestHit{};
+			pScene->GetClosestHit(viewRay, closestHit, bvhLeafNodeIdx);
 
 			if (closestHit.didHit)
 			{
-				for (auto const& light : lights)
+				switch (m_CurrBVHDebugMode)
 				{
-					frameColor += CalculateIllumination(pScene, light, closestHit, viewRay.direction);
+				case BVHDebugMode::LeafColor:
+				{
+					if (bvhLeafNodeIdx != std::numeric_limits<uint32_t>::max())
+					{
+						float const hue{ std::fmod(bvhLeafNodeIdx * 0.618033988f, 1.f) };
+						float const h6{ hue * 6.f };
+						float const f{ h6 - std::floor(h6) };
+						float const p{ 0.9f * 0.2f };
+						float const q{ 0.9f * (1.f - 0.8f * f) };
+						float const t{ 0.9f * (1.f - 0.8f * (1.f - f)) };
+
+						int const hi{ static_cast<int>(h6) % 6 };
+						switch (hi)
+						{
+						case 0: frameColor += ColorRGB{ 0.9f, t, p }; break;
+						case 1: frameColor += ColorRGB{ q, 0.9f, p }; break;
+						case 2: frameColor += ColorRGB{ p, 0.9f, t }; break;
+						case 3: frameColor += ColorRGB{ p, q, 0.9f }; break;
+						case 4: frameColor += ColorRGB{ t, p, 0.9f }; break;
+						case 5: frameColor += ColorRGB{ 0.9f, p, q }; break;
+						default: break;
+						}
+					}
+					else
+					{
+						frameColor += ColorRGB{ 0.15f, 0.15f, 0.15f };
+					}
+					break;
+				}
+				case BVHDebugMode::Wireframe:
+				case BVHDebugMode::Off:
+				default:
+					for (auto const& light : lights)
+					{
+						frameColor += CalculateIllumination(pScene, light, closestHit, viewRay.direction);
+					}
+					break;
+				}
+			}
+
+			//AABB wireframe overlay: draw on top of scene
+			if (m_CurrBVHDebugMode == BVHDebugMode::Wireframe)
+			{
+				for (auto const& mesh : pScene->GetTriangleMeshGeometries())
+				{
+					float wireT{};
+					uint32_t wireDepth{};
+					if (GeometryUtils::TraceAABBWireframes(viewRay, mesh, wireT, wireDepth))
+					{
+						//Green wireframe, brighter for shallower nodes
+						float const brightness{ 1.f - wireDepth * 0.08f };
+						frameColor = ColorRGB{ 0.f, std::max(brightness, 0.2f), 0.f };
+					}
 				}
 			}
 		}

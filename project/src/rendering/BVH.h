@@ -26,8 +26,9 @@ namespace mau
 		{
 			static constexpr uint32_t rootNodeIdx{ 0 };
 
-			BVHNode& root{ bvh[rootNodeIdx] };
-			root.triangleCount = normals.size();
+			bvh.reserve(normals.size() * 2);
+
+			bvh[rootNodeIdx].triangleCount = static_cast<uint32_t>(normals.size());
 
 			//Assign all to root node
 			UpdateNodeBounds(bvh, indices, vertices, rootNodeIdx);
@@ -60,15 +61,13 @@ namespace mau
 
 		void SubDivide(std::vector<BVHNode>& bvh, std::vector<int>& indices, std::vector<Vector3>const& vertices, uint32_t nodeIdx, std::vector<Vector3>& normals, std::vector<Vector3>& transformedNormals)
 		{
-			BVHNode& node{ bvh[nodeIdx] };
-
-			if (node.triangleCount <= 2)
+			if (bvh[nodeIdx].triangleCount <= 2)
 			{
 				return;
 			}
 
 			//Splitting plane axis
-			Vector3 const extent{ node.aabbMax - node.aabbMin };
+			Vector3 const extent{ bvh[nodeIdx].aabbMax - bvh[nodeIdx].aabbMin };
 			int axis{ 0 };
 			if (extent.y > extent.x)
 			{
@@ -79,17 +78,15 @@ namespace mau
 				axis = 2;
 			}
 
-			float const splitPos{ node.aabbMin[axis] + extent[axis] * .5f };
+			float const splitPos{ bvh[nodeIdx].aabbMin[axis] + extent[axis] * .5f };
 
-			uint32_t i{ node.leftFirst };
-			uint32_t j{ i + node.triangleCount - 1 };
+			uint32_t i{ bvh[nodeIdx].leftFirst };
+			uint32_t j{ i + bvh[nodeIdx].triangleCount - 1 };
 
 			//in place splitting of groups
 			while(i <= j)
 			{
-				//triangles[0] == indices[0, 1, 2] and so on
 				auto const idx{ i * 3 };
-				//Center is currently not stored inside the mesh, could be stored if necessary
 				Vector3 const center{ (vertices[indices[idx]] + vertices[indices[idx + 1]] + vertices[indices[idx + 2]]) / 3 };
 
 				if (center[axis] < splitPos)
@@ -98,11 +95,6 @@ namespace mau
 				}
 				else
 				{
-					//Swap the indices - Example: indices [0, 1, 2] are swapped with [6, 7, 8] - with the way we currently store data this would mess up the normals
-					//So also swap the normal; indices[0, 1, 2] == normal [0] so say we swap indices 0-2 with indices 6-8 we swap normal 0 with normal 2
-					//Do the same with the transformxedNormals to avoid recalculating all normals
-					//this can be avoided by changing the mesh struct in the future - store a vector with triangles and work with the triangleIndex in the bvh
-
 					auto const idx2{ (j * 3) };
 					std::swap(indices[idx], indices[idx2]);
 					std::swap(indices[idx + 1], indices[idx2 + 1]);
@@ -116,29 +108,30 @@ namespace mau
 			}
 
 			//Abort split if one of the sides is empty
-			uint32_t leftCount{ i - node.leftFirst };
-			if (leftCount == 0 || leftCount == node.triangleCount)
+			uint32_t const leftCount{ i - bvh[nodeIdx].leftFirst };
+			if (leftCount == 0 || leftCount == bvh[nodeIdx].triangleCount)
 			{
 				return;
 			}
 
-			//Create child nodes
+			//Create child nodes (vector is pre-reserved so no reallocation)
+			auto const leftChildIdx = static_cast<uint32_t>(bvh.size());
 			bvh.emplace_back(BVHNode{});
-			auto const leftChildIdx = bvh.size() - 1;
+			auto const rightChildIdx = static_cast<uint32_t>(bvh.size());
 			bvh.emplace_back(BVHNode{});
-			auto const rightChildIdx = bvh.size() - 1;
 
-			bvh[leftChildIdx].leftFirst = node.leftFirst;
+			bvh[leftChildIdx].leftFirst = bvh[nodeIdx].leftFirst;
 			bvh[leftChildIdx].triangleCount = leftCount;
 			bvh[rightChildIdx].leftFirst = i;
-			bvh[rightChildIdx].triangleCount = node.triangleCount - leftCount;
+			bvh[rightChildIdx].triangleCount = bvh[nodeIdx].triangleCount - leftCount;
 
-			node.leftFirst = leftChildIdx;
-			node.triangleCount = 0;
+			bvh[nodeIdx].leftFirst = leftChildIdx;
+			bvh[nodeIdx].triangleCount = 0;
+
 			UpdateNodeBounds(bvh, indices, vertices, leftChildIdx);
 			UpdateNodeBounds(bvh, indices, vertices, rightChildIdx);
-			//Recurse
-			SubDivide(bvh, indices, vertices, leftChildIdx,normals, transformedNormals);
+
+			SubDivide(bvh, indices, vertices, leftChildIdx, normals, transformedNormals);
 			SubDivide(bvh, indices, vertices, rightChildIdx, normals, transformedNormals);
 		}
 	};

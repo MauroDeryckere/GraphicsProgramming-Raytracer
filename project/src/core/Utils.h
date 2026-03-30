@@ -320,15 +320,15 @@ namespace mau
 			return tmax >= tmin && tmin < ray.max && tmax > 0;
 		}
 
-		inline bool HitTest_BVH(const Ray& ray, const TriangleMesh& mesh, const std::vector<BVHNode>& bvh, uint32_t nodeIdx, HitRecord& hitRecord, bool ignoreHitRecord = false)
+		inline bool HitTest_BVH(const Ray& ray, const TriangleMesh& mesh, const std::vector<BVHNode>& bvh, uint32_t nodeIdx, HitRecord& hitRecord, uint32_t& leafNodeIdx, bool ignoreHitRecord = false)
 		{
 			const BVHNode& node{ bvh[nodeIdx] };
-			if (!IntersectAABB(ray, node.aabbMin, node.aabbMax)) 
+			if (!IntersectAABB(ray, node.aabbMin, node.aabbMax))
 				return false;
 
 			if (node.IsLeaf())
 			{
-				HitRecord closestHitRecord{ };
+				bool anyHit{ false };
 
 				for (uint32_t i{ 0 }; i < node.triangleCount; ++i)
 				{
@@ -338,42 +338,139 @@ namespace mau
 								mesh.transformedNormals[(node.leftFirst + i)]
 					};
 
-
 					t.cullMode = mesh.cullMode;
 					t.materialIndex = mesh.materialIndex;
 
-					HitRecord temp{  };
+					HitRecord temp{};
 					if (HitTest_Triangle(t, ray, temp, ignoreHitRecord))
 					{
-						if (temp.t < closestHitRecord.t)
+						if (ignoreHitRecord)
 						{
-							closestHitRecord = temp;
+							return true;
+						}
+
+						if (temp.t < hitRecord.t)
+						{
+							hitRecord = temp;
+							leafNodeIdx = nodeIdx;
+							anyHit = true;
 						}
 					}
 				}
 
-				hitRecord = closestHitRecord;
-				return closestHitRecord.didHit;
+				return anyHit;
 			}
 
-			if (HitTest_BVH(ray, mesh, bvh, node.leftFirst, hitRecord, ignoreHitRecord))
+			//Test both children, keep closest hit
+			bool const hitLeft{ HitTest_BVH(ray, mesh, bvh, node.leftFirst, hitRecord, leafNodeIdx, ignoreHitRecord) };
+
+			if (ignoreHitRecord && hitLeft)
 			{
 				return true;
 			}
-			if (HitTest_BVH(ray, mesh, bvh, node.leftFirst + 1, hitRecord, ignoreHitRecord))
+
+			bool const hitRight{ HitTest_BVH(ray, mesh, bvh, node.leftFirst + 1, hitRecord, leafNodeIdx, ignoreHitRecord) };
+
+			return hitLeft || hitRight;
+		}
+
+		inline bool HitTest_BVH(const Ray& ray, const TriangleMesh& mesh, const std::vector<BVHNode>& bvh, uint32_t nodeIdx)
+		{
+			HitRecord temp{};
+			uint32_t leafIdx{};
+			return HitTest_BVH(ray, mesh, bvh, nodeIdx, temp, leafIdx, true);
+		}
+#pragma endregion
+
+		inline bool HitTest_AABBWireframe(const Ray& ray, const Vector3& bmin, const Vector3& bmax, float& tOut, float edgeWidth = 0.03f)
+		{
+			float tx1 = (bmin.x - ray.origin.x) / ray.direction.x;
+			float tx2 = (bmax.x - ray.origin.x) / ray.direction.x;
+
+			float tmin = std::min(tx1, tx2);
+			float tmax = std::max(tx1, tx2);
+
+			float ty1 = (bmin.y - ray.origin.y) / ray.direction.y;
+			float ty2 = (bmax.y - ray.origin.y) / ray.direction.y;
+
+			tmin = std::max(tmin, std::min(ty1, ty2));
+			tmax = std::min(tmax, std::max(ty1, ty2));
+
+			float tz1 = (bmin.z - ray.origin.z) / ray.direction.z;
+			float tz2 = (bmax.z - ray.origin.z) / ray.direction.z;
+
+			tmin = std::max(tmin, std::min(tz1, tz2));
+			tmax = std::min(tmax, std::max(tz1, tz2));
+
+			if (tmax < tmin || tmax < 0 || tmin > ray.max)
 			{
+				return false;
+			}
+
+			float const tHit{ tmin > 0 ? tmin : tmax };
+			Vector3 const hitPoint{ ray.origin + ray.direction * tHit };
+			Vector3 const size{ bmax - bmin };
+
+			//Normalize hit point to [0,1] within box
+			float const nx{ (hitPoint.x - bmin.x) / size.x };
+			float const ny{ (hitPoint.y - bmin.y) / size.y };
+			float const nz{ (hitPoint.z - bmin.z) / size.z };
+
+			//On a box face, one axis is at 0 or 1. Near an edge means another axis is also near 0 or 1.
+			int nearEdgeCount{ 0 };
+			if (nx < edgeWidth || nx > 1.f - edgeWidth) ++nearEdgeCount;
+			if (ny < edgeWidth || ny > 1.f - edgeWidth) ++nearEdgeCount;
+			if (nz < edgeWidth || nz > 1.f - edgeWidth) ++nearEdgeCount;
+
+			if (nearEdgeCount >= 2)
+			{
+				tOut = tHit;
 				return true;
 			}
 
 			return false;
 		}
 
-		inline bool HitTest_BVH(const Ray& ray, const TriangleMesh& mesh, const std::vector<BVHNode>& bvh, uint32_t nodeIdx)
+		inline bool TraceAABBWireframes(const Ray& ray, const TriangleMesh& mesh, float& closestT, uint32_t& hitDepth)
 		{
-			HitRecord temp{  };
-			return HitTest_BVH(ray, mesh, bvh, nodeIdx, temp, true);
+			if (mesh.bvh.empty())
+			{
+				return false;
+			}
+
+			struct StackEntry { uint32_t nodeIdx; uint32_t depth; };
+			StackEntry stack[64];
+			int stackSize{ 0 };
+			stack[stackSize++] = { 0, 0 };
+
+			bool anyHit{ false };
+			closestT = std::numeric_limits<float>::max();
+
+			while (stackSize > 0)
+			{
+				auto const [nodeIdx, depth] { stack[--stackSize] };
+				auto const& node{ mesh.bvh[nodeIdx] };
+
+				float t{};
+				if (HitTest_AABBWireframe(ray, node.aabbMin, node.aabbMax, t))
+				{
+					if (t < closestT && t > ray.min)
+					{
+						closestT = t;
+						hitDepth = depth;
+						anyHit = true;
+					}
+				}
+
+				if (!node.IsLeaf())
+				{
+					stack[stackSize++] = { node.leftFirst, depth + 1 };
+					stack[stackSize++] = { node.leftFirst + 1, depth + 1 };
+				}
+			}
+
+			return anyHit;
 		}
-#pragma endregion
 
 		[[nodiscard]] inline Vector3 GetRandomTriangleSample(const Vector3& A, const Vector3& B, const Vector3& C) noexcept
 		{

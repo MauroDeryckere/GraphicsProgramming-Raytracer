@@ -48,6 +48,8 @@ F5: Decrease samples per frame<br>
 F6: Increase samples per frame<br>
 F7: Cycle tone mapping (none / Reinhard Jodie / ACES)<br>
 F8: Toggle progressive rendering<br>
+F9: Toggle BVH acceleration<br>
+F10: Cycle BVH debug (off / leaf colors / AABB wireframe)<br>
 
 **Scenes**<br>
 1-9: Switch scene<br>

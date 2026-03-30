@@ -22,15 +22,13 @@ namespace mau
 		m_Lights.reserve(32);
 	}
 
-	void mau::Scene::GetClosestHit(const Ray& ray, HitRecord& closestHit) const
+	void mau::Scene::GetClosestHit(const Ray& ray, HitRecord& closestHit, uint32_t& bvhLeafNodeIdx) const
 	{
-		constexpr bool useBVH{ false };
+		HitRecord closestHitRecord{};
 
-		HitRecord closestHitRecord{ };
-
-		for(auto const& sphere : m_SphereGeometries)
+		for (auto const& sphere : m_SphereGeometries)
 		{
-			HitRecord temp{ };
+			HitRecord temp{};
 			if (GeometryUtils::HitTest_Sphere(sphere, ray, temp))
 			{
 				if (temp.t < closestHitRecord.t)
@@ -42,7 +40,7 @@ namespace mau
 
 		for (auto const& plane : m_PlaneGeometries)
 		{
-			HitRecord temp{ };
+			HitRecord temp{};
 			if (GeometryUtils::HitTest_Plane(plane, ray, temp))
 			{
 				if (temp.t < closestHitRecord.t)
@@ -52,16 +50,27 @@ namespace mau
 			}
 		}
 
-		if (useBVH)
+		if (m_UseBVH)
 		{
 			for (const auto& mesh : m_TriangleMeshGeometries)
 			{
-				HitRecord temp{ };
-				if (GeometryUtils::HitTest_BVH(ray, mesh, mesh.bvh, 0, temp))
+				if (!mesh.bvh.empty())
 				{
-					if (temp.t < closestHitRecord.t)
+					uint32_t leafIdx{};
+					if (GeometryUtils::HitTest_BVH(ray, mesh, mesh.bvh, 0, closestHitRecord, leafIdx))
 					{
-						closestHitRecord = temp;
+						bvhLeafNodeIdx = leafIdx;
+					}
+				}
+				else
+				{
+					HitRecord temp{};
+					if (GeometryUtils::HitTest_TriangleMesh(mesh, ray, temp))
+					{
+						if (temp.t < closestHitRecord.t)
+						{
+							closestHitRecord = temp;
+						}
 					}
 				}
 			}
@@ -70,7 +79,7 @@ namespace mau
 		{
 			for (auto const& mesh : m_TriangleMeshGeometries)
 			{
-				HitRecord temp{ };
+				HitRecord temp{};
 				if (GeometryUtils::HitTest_TriangleMesh(mesh, ray, temp))
 				{
 					if (temp.t < closestHitRecord.t)
@@ -86,8 +95,6 @@ namespace mau
 
 	bool Scene::DoesHit(const Ray& ray) const
 	{
-		constexpr bool useBVH{ false };
-
 		for (auto const& sphere : m_SphereGeometries)
 		{
 			if (GeometryUtils::HitTest_Sphere(sphere, ray))
@@ -104,14 +111,23 @@ namespace mau
 			}
 		}
 
-
-		if (useBVH)
+		if (m_UseBVH)
 		{
 			for (const auto& mesh : m_TriangleMeshGeometries)
 			{
-				if (GeometryUtils::HitTest_BVH(ray, mesh, mesh.bvh, 0))
+				if (!mesh.bvh.empty())
 				{
-					return true;
+					if (GeometryUtils::HitTest_BVH(ray, mesh, mesh.bvh, 0))
+					{
+						return true;
+					}
+				}
+				else
+				{
+					if (GeometryUtils::HitTest_TriangleMesh(mesh, ray))
+					{
+						return true;
+					}
 				}
 			}
 		}
@@ -125,7 +141,6 @@ namespace mau
 				}
 			}
 		}
-
 
 		return false;
 	}
@@ -318,18 +333,21 @@ namespace mau
 		m->Translate({ -1.75f, 4.5f, 0.f });
 		m->UpdateAABB();
 		m->UpdateTransforms();
+		m->InitializeBVH();
 
 		m = AddTriangleMesh(TriangleCullMode::FrontFaceCulling, matLambert_White);
 		m->AppendTriangle(baseTriangle, true);
 		m->Translate({ 0.f, 4.5f, 0.f });
 		m->UpdateAABB();
 		m->UpdateTransforms();
+		m->InitializeBVH();
 
 		m = AddTriangleMesh(TriangleCullMode::NoCulling, matLambert_White);
 		m->AppendTriangle(baseTriangle, true);
 		m->Translate({ 1.75f, 4.5f, 0.f });
 		m->UpdateAABB();
 		m->UpdateTransforms();
+		m->InitializeBVH();
 
 		//Lights
 		AddPointLight({ 0.f, 5.f, 5.f }, 50.f, { 1.f, .61f, .45f });
@@ -346,6 +364,7 @@ namespace mau
 		{
 			m.RotateY(yawAngle);
 			m.UpdateTransforms();
+			m.InitializeBVH();
 		}
 
 		m_IsDirty = true;

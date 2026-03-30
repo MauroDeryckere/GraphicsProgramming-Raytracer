@@ -8,6 +8,12 @@
 
 namespace mau
 {
+	/* --- CONSOLE COLORS --- */
+	inline constexpr char const* RESET  = "\033[0m";
+	inline constexpr char const* RED    = "\033[31m";
+	inline constexpr char const* GREEN  = "\033[32m";
+	inline constexpr char const* YELLOW = "\033[33m";
+
 	/* --- CONSTANTS --- */
 	constexpr auto PI = 3.14159265358979323846f;
 	constexpr auto PI_DIV_2 = 1.57079632679489661923f;
