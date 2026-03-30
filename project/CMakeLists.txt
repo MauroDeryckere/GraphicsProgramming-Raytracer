@@ -11,6 +11,9 @@ set(SOURCES
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+# C++20
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -22,7 +25,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # --- Helper: copy files to output directory ---
 function(copy_files_post_build TARGET_NAME SOURCE_DIR PATTERNS)
     foreach(PATTERN ${PATTERNS})
-        file(GLOB_RECURSE FILES "${SOURCE_DIR}/${PATTERN}")
+        file(GLOB_RECURSE FILES CONFIGURE_DEPENDS "${SOURCE_DIR}/${PATTERN}")
         foreach(FILE ${FILES})
             add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FILE}
@@ -35,7 +38,7 @@ function(copy_to_resources TARGET_NAME SOURCE_DIR PATTERNS)
     set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/resources")
     file(MAKE_DIRECTORY ${OUT_DIR})
     foreach(PATTERN ${PATTERNS})
-        file(GLOB_RECURSE FILES "${SOURCE_DIR}/${PATTERN}")
+        file(GLOB_RECURSE FILES CONFIGURE_DEPENDS "${SOURCE_DIR}/${PATTERN}")
         foreach(FILE ${FILES})
             add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FILE} ${OUT_DIR})
