@@ -69,9 +69,6 @@ int main(int argc, char* args[])
 	//Start loop
 	pTimer->Start();
 
-	// Start Benchmark
-	// pTimer->StartBenchmark();
-
 	float printTimer = 0.f;
 	bool isLooping = true;
 	bool takeScreenshot = false;
@@ -156,6 +153,6 @@ void PrintInfo()
 {
 	std::cout << "Raytracer project Mauro Deryckere\n";
 	std::cout << "Keybinds: \n";
-	std::cout << "F1: Screenshot\nF2: Shadows on/off\nF3: Cycle light mode\nF4: Cycle sample mode\nF5: Decrease samples\nF6: Increase samples\n\n";
+	std::cout << "X: Screenshot\nF2: Shadows on/off\nF3: Cycle light mode\nF4: Cycle sample mode\nF5: Decrease samples\nF6: Increase samples\n\n";
 	std::cout << "WASD: Move camera\nHold LMB and move: rotate camera\n\n";
 }

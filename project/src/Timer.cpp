@@ -2,8 +2,6 @@
 
 #include <iostream>
 #include <numeric>
-
-#include <iostream>
 #include <fstream>
 
 #include "SDL.h"

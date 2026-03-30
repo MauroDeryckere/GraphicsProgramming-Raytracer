@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VECTOR3_H
+#define VECTOR3_H
 
 #include <algorithm>
 
@@ -75,3 +76,5 @@ namespace dae
 		return { v.x * scale, v.y * scale, v.z * scale };
 	}
 }
+
+#endif

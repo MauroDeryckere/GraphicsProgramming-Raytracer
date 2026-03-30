@@ -14,8 +14,6 @@ namespace dae
 		Vector3 aabbMin{};
 		Vector3 aabbMax{};
 
-//		uint32_t leftChild{ 0 }; //rightChild is always leftChild + 1 and always exists
-
 		uint32_t leftFirst{ 0 };
 		uint32_t triangleCount{ 0 };
 

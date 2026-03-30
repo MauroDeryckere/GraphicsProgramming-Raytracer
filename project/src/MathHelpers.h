@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHHELPERS_H
+#define MATHHELPERS_H
+
 #include <cmath>
 #include <cfloat>
 
@@ -31,3 +33,5 @@ namespace dae
 		return std::abs(a - b) < epsilon;
 	}
 }
+
+#endif

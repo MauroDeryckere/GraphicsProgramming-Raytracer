@@ -11,8 +11,6 @@ namespace dae
 	{
 		None,
 		Triangular
-		//Rectangular TODO
-		//...
 	};
 
 	enum class LightType : uint8_t

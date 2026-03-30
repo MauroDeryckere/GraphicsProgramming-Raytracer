@@ -8,8 +8,6 @@
 #include <ranges>
 #include <algorithm>
 
-#include "SDL_egl.h"
-
 namespace dae
 {
 #pragma region Base Scene
@@ -398,7 +396,6 @@ namespace dae
 		AddPlane({ -5.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, matLambert_GrayBlue);
 
 		auto pMesh = AddTriangleMesh(TriangleCullMode::BackFaceCulling, matLambert_White);
-		//Utils::ParseOBJ("resources/simple_cube.obj",
 		Utils::ParseOBJ("resources/simple_object.obj",
 			pMesh->positions,
 			pMesh->normals,
@@ -418,9 +415,6 @@ namespace dae
 	void Scene_W4_TestScene::Update(Timer* pTimer)
 	{
 		Scene::Update(pTimer);
-
-		//m_TriangleMeshGeometries.back().RotateY(PI_DIV_2 * pTimer->GetTotal());
-		//m_TriangleMeshGeometries.back().UpdateTransforms();
 	}
 
 	void Scene_W4_ReferenceScene::Initialize()
@@ -525,12 +519,9 @@ namespace dae
 
 		auto pMesh = AddTriangleMesh(TriangleCullMode::BackFaceCulling, matLambert_White);
 		Utils::ParseOBJ("resources/lowpoly_bunny.obj",
-		//Utils::ParseOBJ("resources/simple_cube.obj",
 			pMesh->positions,
 			pMesh->normals,
 			pMesh->indices);
-
-		//pMesh->CalculateNormals();
 
 		pMesh->Scale({ 2.f, 2.f, 2.f });
 		pMesh->RotateY(TO_RADIANS * 180.f);
@@ -575,10 +566,7 @@ namespace dae
 		AddSphere({ 0.f, 3.f, 0.f }, .75f, matCT_GrayMediumPlastic);
 		AddSphere({ 1.75f, 3.f, 0.f }, .75f, matCT_GraySmoothPlastic);
 
-		//AddPointLight({ 0.f, 5.f, 5.f }, 20.f, { 1.f, .61f, .45f }); //Backlight
-		//AddPointLight({ -2.5f, 5.f, -5.f }, 10.f, { 1.f, .80f, .45f });
 		AddAreaLight({}, 1000.f , { .45f, 1.f, .45f }, LightShape::Triangular, 0.f, { {-1.75, 0.5f, -6.f}, { 0.f, 5.f, -5.f}, {1.75f, 0.5f, -5.f} });
-		//AddDirectionalLight(Vector3{ 1.f, -1.f, 1.f }.Normalized(), 10.f, { 1.f, 1.f, 1.f }); //Need to disable some planes to test this since they block the direction light that's infinitely far away
 	}
 
 }

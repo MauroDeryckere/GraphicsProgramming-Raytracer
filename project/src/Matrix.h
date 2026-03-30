@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #include "Vector3.h"
 #include "Vector4.h"
 
@@ -67,3 +69,5 @@ namespace dae {
 		// v3x v3y v3z v3w
 	};
 }
+
+#endif

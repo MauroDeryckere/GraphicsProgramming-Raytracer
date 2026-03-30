@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RENDERER_H
+#define RENDERER_H
 
 #include <cstdint>
 #include <vector>
@@ -93,3 +94,5 @@ namespace dae
 		void BoxFilter(ColorRGB& c) const noexcept;
 	};
 }
+
+#endif

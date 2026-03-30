@@ -1,4 +1,6 @@
-#pragma once
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <iostream>
 #include <cassert>
 #include <fstream>
@@ -481,3 +483,5 @@ namespace dae
 #pragma warning(pop)
 	}
 }
+
+#endif

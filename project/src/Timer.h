@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TIMER_H
+#define TIMER_H
 
 //Standard includes
 #include <cstdint>
@@ -59,3 +60,5 @@ namespace dae
 		std::vector<float> m_Benchmarks{};
 	};
 }
+
+#endif

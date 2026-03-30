@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VECTOR4_H
+#define VECTOR4_H
 
 namespace dae
 {
@@ -31,3 +32,5 @@ namespace dae
 		bool operator==(const Vector4& v) const;
 	};
 }
+
+#endif

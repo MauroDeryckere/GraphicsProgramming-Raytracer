@@ -1,4 +1,6 @@
-#pragma once
+#ifndef BRDFS_H
+#define BRDFS_H
+
 #include "Maths.h"
 
 namespace dae
@@ -92,3 +94,5 @@ namespace dae
 
 	}
 }
+
+#endif

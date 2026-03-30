@@ -12,10 +12,7 @@
 #include "Utils.h"
 
 #include <algorithm>
-#include <corecrt_io.h>
 #include <execution>
-
-#include "SDL_egl.h"
 
 
 using namespace dae;
@@ -77,10 +74,6 @@ void Renderer::Render(Scene* pScene) const
 		BoxFilter(finalColor);
 		finalColor.MaxToOne();
 
-		//Different forms of mapping the final colour
-		//ReinhardJolieToneMap(finalColor);
-		//ACESAproxToneMap(finalColor);
-
 		m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
 			static_cast<uint8_t>(finalColor.r * 255),
 			static_cast<uint8_t>(finalColor.g * 255),
@@ -140,7 +133,6 @@ ColorRGB dae::Renderer::CalculateIllumination(Scene* pScene, const Light& light,
 			case LightShape::Triangular:
 			{
 				auto const pointOnTriangle{ GeometryUtils::GetRandomTriangleSample(light.vertices[0], light.vertices[1], light.vertices[2])};
-				//auto const pointOnTriangle{ GeometryUtils::GetUniformTriangleSample(light.vertices[0], light.vertices[1], light.vertices[2], m_LightSamples, sample) };
 
 				auto const dirToLight{ GetDirectionToLight(light, pointOnTriangle, closestHit.origin) };
 

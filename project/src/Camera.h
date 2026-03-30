@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CAMERA_H
+#define CAMERA_H
+
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
 
@@ -104,3 +106,5 @@ namespace dae
 		}
 	};
 }
+
+#endif

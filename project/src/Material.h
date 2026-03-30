@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATERIAL_H
+#define MATERIAL_H
+
 #include "Maths.h"
 #include "DataTypes.h"
 #include "BRDFs.h"
@@ -151,3 +153,5 @@ namespace dae
 	};
 #pragma endregion
 }
+
+#endif

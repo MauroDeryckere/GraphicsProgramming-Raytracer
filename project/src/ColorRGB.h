@@ -1,4 +1,6 @@
-#pragma once
+#ifndef COLORRGB_H
+#define COLORRGB_H
+
 #include "MathHelpers.h"
 
 namespace dae
@@ -197,8 +199,9 @@ namespace dae
 		color.b = std::clamp(color.b, 0.f, 1.f);
 	}
 
-	//not aprox
 	//https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
 #pragma endregion
 
 }
+
+#endif
