@@ -260,21 +260,20 @@ namespace mau
 				return false;
 			}
 
-			HitRecord closestHitRecord{ };
+			HitRecord closestHitRecord{};
 
-			for (uint32_t i{ 0 }; i < mesh.indices.size(); i += 3) //Every 3 indices == a triangle
+			Triangle t{};
+			t.cullMode = mesh.cullMode;
+			t.materialIndex = mesh.materialIndex;
+
+			for (uint32_t i{ 0 }; i < mesh.indices.size(); i += 3)
 			{
-				Triangle t{ mesh.transformedPositions[mesh.indices[i]],
-							mesh.transformedPositions[mesh.indices[i+1]],
-							mesh.transformedPositions[mesh.indices[i+2]],
-							mesh.transformedNormals[i/3]
-						 };
+				t.v0 = mesh.transformedPositions[mesh.indices[i]];
+				t.v1 = mesh.transformedPositions[mesh.indices[i + 1]];
+				t.v2 = mesh.transformedPositions[mesh.indices[i + 2]];
+				t.normal = mesh.transformedNormals[i / 3];
 
-
-				t.cullMode = mesh.cullMode;
-				t.materialIndex = mesh.materialIndex;
-
-				HitRecord temp{  };
+				HitRecord temp{};
 				if (HitTest_Triangle(t, ray, temp, ignoreHitRecord))
 				{
 					if (temp.t < closestHitRecord.t)
@@ -330,20 +329,19 @@ namespace mau
 			{
 				bool anyHit{ false };
 
+				Triangle t{};
+				t.cullMode = mesh.cullMode;
+				t.materialIndex = mesh.materialIndex;
+
 				for (uint32_t i{ 0 }; i < node.triangleCount; ++i)
 				{
-					auto const triIdx{ (node.leftFirst + i) };
+					auto const triIdx{ node.leftFirst + i };
 					auto const idx{ triIdx * 3 };
 
-					Triangle t{
-						mesh.transformedPositions[mesh.indices[idx]],
-						mesh.transformedPositions[mesh.indices[idx + 1]],
-						mesh.transformedPositions[mesh.indices[idx + 2]],
-						mesh.transformedNormals[triIdx]
-					};
-
-					t.cullMode = mesh.cullMode;
-					t.materialIndex = mesh.materialIndex;
+					t.v0 = mesh.transformedPositions[mesh.indices[idx]];
+					t.v1 = mesh.transformedPositions[mesh.indices[idx + 1]];
+					t.v2 = mesh.transformedPositions[mesh.indices[idx + 2]];
+					t.normal = mesh.transformedNormals[triIdx];
 
 					HitRecord temp{};
 					if (HitTest_Triangle(t, ray, temp, ignoreHitRecord))
