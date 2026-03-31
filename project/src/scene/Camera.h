@@ -104,7 +104,7 @@ namespace mau
 				return false;
 			}
 
-			totalYaw -= deltaX * rotationSpeed * deltaTime;
+			totalYaw += deltaX * rotationSpeed * deltaTime;
 			totalPitch = std::clamp(totalPitch + deltaY * rotationSpeed * deltaTime, -89.f, 89.f);
 
 			auto const m{ Matrix::CreateRotation(TO_RADIANS * totalPitch, TO_RADIANS * totalYaw, 0.f) };
