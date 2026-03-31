@@ -34,7 +34,7 @@ namespace mau
 				*this /= maxValue;
 		}
 
-		static const ColorRGB& Lerp(const ColorRGB& c1, const ColorRGB& c2, float factor)
+		static ColorRGB Lerp(const ColorRGB& c1, const ColorRGB& c2, float factor)
 		{
 			return { Lerpf(c1.r, c2.r, factor), Lerpf(c1.g, c2.g, factor), Lerpf(c1.b, c2.b, factor) };
 		}
@@ -172,7 +172,7 @@ namespace mau
 	}
 
 #pragma region ToneMapping
-	static void ReinhardJolieToneMap(ColorRGB& color)
+	static void ReinhardJodieToneMap(ColorRGB& color)
 	{
 		float const l{ color.Luminance() };
 		auto const tv{ color / (colors::White + color) };

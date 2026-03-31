@@ -34,7 +34,7 @@ namespace mau
 		uint32_t GetAccumulatedFrames() const noexcept { return m_AccumulatedFrames; }
 		void ResetAccumulation() noexcept;
 
-		void CycleLighMode() noexcept
+		void CycleLightMode() noexcept
 		{
 			auto curr{ static_cast<uint8_t>(m_CurrLightMode) };
 			++curr %= static_cast<uint8_t>(LightMode::COUNT);

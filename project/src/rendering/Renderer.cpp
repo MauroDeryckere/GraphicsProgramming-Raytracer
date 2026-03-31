@@ -157,7 +157,7 @@ void Renderer::Render(Scene* pScene)
 		switch (m_CurrToneMapMode)
 		{
 		case ToneMapMode::ReinhardJodie:
-			ReinhardJolieToneMap(displayColor);
+			ReinhardJodieToneMap(displayColor);
 			break;
 		case ToneMapMode::ACES:
 			ACESAproxToneMap(displayColor);

@@ -81,7 +81,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* args[])
 
 				if (e.key.keysym.scancode == SDL_SCANCODE_F3)
 				{
-					pRenderer->CycleLighMode();
+					pRenderer->CycleLightMode();
 				}
 
 				if (e.key.keysym.scancode == SDL_SCANCODE_F4)
