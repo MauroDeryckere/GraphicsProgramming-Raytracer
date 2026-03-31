@@ -10,12 +10,15 @@ A CPU raytracer built with C++20, featuring physically-based rendering with Cook
 
 ## Screenshots
 
-### Reference Scene
-![Reference scene](docs/Reference.png)
+### Cook-Torrance BRDF
+![Cook-Torrance PBR materials](docs/BRDF.png)
 
-### Debug Views
-![Observed area](docs/ObservedArea.png)
-![Radiance](docs/Radiance.png)
+### Soft Shadows (Area Light)
+![Soft shadows via triangular area light](docs/SoftShadowsAreaLight.png)
+
+### BVH Debug Views
+![BVH AABB wireframe](docs/BVHAABBB.png)
+![BVH leaf node colors](docs/BVHCategory.png)
 
 ## Features
 
