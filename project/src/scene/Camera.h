@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <algorithm>
+
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
 
@@ -38,9 +40,8 @@ namespace mau
 
 		Matrix CalculateCameraToWorld()
 		{
-			Vector3 const r{ Vector3::Cross(Vector3::UnitY, forward) };
-			right = r.Normalized();
-			up = Vector3::Cross(forward, r).Normalized();
+			right = Vector3::Cross(Vector3::UnitY, forward).Normalized();
+			up = Vector3::Cross(forward, right).Normalized();
 
 			cameraToWorld = { right, up, forward, origin };
 
@@ -88,28 +89,29 @@ namespace mau
 
 			if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
-				UpdateCameraDirection(static_cast<float>(mouseX), static_cast<float>(mouseY), deltaTime);
-				m_IsDirty = true;
+				if (UpdateCameraDirection(static_cast<float>(mouseX), static_cast<float>(mouseY), deltaTime))
+					m_IsDirty = true;
 			}
 		}
 
 	private:
 		bool m_IsDirty{ false };
 
-		void UpdateCameraDirection(float deltaX, float deltaY, float deltaTime)
+		bool UpdateCameraDirection(float deltaX, float deltaY, float deltaTime)
 		{
 			if (deltaX == 0.f && deltaY == 0.f)
 			{
-				return;
+				return false;
 			}
 
 			totalYaw -= deltaX * rotationSpeed * deltaTime;
-			totalPitch += deltaY * rotationSpeed * deltaTime;
+			totalPitch = std::clamp(totalPitch + deltaY * rotationSpeed * deltaTime, -89.f, 89.f);
 
 			auto const m{ Matrix::CreateRotation(TO_RADIANS * totalPitch, TO_RADIANS * totalYaw, 0.f) };
 
 			forward = m.TransformVector(Vector3::UnitZ);
 			forward.Normalize();
+			return true;
 		}
 	};
 }
