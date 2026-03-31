@@ -119,11 +119,6 @@ namespace mau
 			return *this;
 		}
 
-		constexpr const ColorRGB& operator+(float s)
-		{
-			return *this += s;
-		}
-
 		constexpr ColorRGB operator+(float s) const
 		{
 			return { r + s, g + s, b + s };
